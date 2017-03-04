@@ -8,9 +8,10 @@ Product Backlog (Under Projects Tab)
 # Current Sprint
 
 Milestone 1
-  User Authentication
-  -Sign up form
-  -Login Form
-  -Encryption
+
+User Authentication
+Sign up form
+Login Form
+Encryption
 
 # Next Sprint
