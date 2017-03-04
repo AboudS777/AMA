@@ -3,7 +3,7 @@
 
 Developing an "Ask me anything" web-based app.
 
-Product Backlog (Under Projects Tab)
+[Product Backlog](https://github.com/AboudS777/AMA/projects)
 
 # Current Sprint
 
