@@ -2,7 +2,7 @@ language: java
 jdk:
  - oraclejdk8
 deploy:
- provider:
+ provider: heroku
  api-key: 
-  secure:
- app:
+  secure: $HEROKU_API_KEY
+ app: lippep-spring-boot-test
