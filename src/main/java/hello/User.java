@@ -1,50 +1,57 @@
 package hello;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import javax.persistence.Id;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.validation.constraints.NotNull;
 
-/**
- * Created by sarrankanpathmanatha on 3/5/2017.
- */
+@Entity
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @NotNull
     @NotEmpty
-    private String firstName;
-    @NotNull
-    @NotEmpty
-    private String lastName;
+    private String username;
+
     @NotNull
     @NotEmpty
     private String password;
 
     public User()
     {
+        this.username = null;
+        this.password = null;
 
     }
 
-    public User(String firstname, String lastName, String password)
+
+    public User(String username, String password)
     {
-        this.firstName = firstname;
-        this.lastName = lastName;
+        this.username = username;
         this.password = password;
 
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Long getId() {
+        return id;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

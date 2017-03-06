@@ -1,5 +1,6 @@
 package hello;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,32 +18,45 @@ import javax.validation.Valid;
 @Controller
 public class UserController {
 
+    @Autowired
+    IUserService service;
+
+    @Autowired
+    UserRepository repository;
+
     @GetMapping("/")
     public String showRegistrationForm(WebRequest request, Model model) {
         User userDto = new User();
         model.addAttribute("user", userDto);
+        model.addAttribute("users", repository.findAll());
         return "registration";
     }
 
     @PostMapping("/")
-    public ModelAndView registerUserAccount
-            (@ModelAttribute("user") @Valid User accountDto,
-             BindingResult result, WebRequest request, Errors errors) {
+    public String registerUserAccount(
+            @ModelAttribute("user") @Valid User accountDto,
+            BindingResult result,
+            WebRequest request,
+            Errors errors) {
 
         User registered = new User();
         if (!result.hasErrors()) {
             registered = createUserAccount(accountDto, result);
         }
-        else {
-            return new ModelAndView("successRegister", "user", accountDto);
+        if (registered == null) {
+            result.rejectValue("userName", "message.regError");
         }
-
-        return new ModelAndView("successRegister", "user", accountDto);
-
+        if (result.hasErrors()) {
+            //return new ModelAndView("registration", "user", accountDto);
+            return "registration";
+        }
+        else {
+            //return new ModelAndView("successRegister", "user", accountDto);
+            return "successRegister";
+        }
     }
     private User createUserAccount(User accountDto, BindingResult result) {
         User registered = null;
-        UserService service = null;
         registered = service.registerNewUserAccount(accountDto);
         return registered;
     }

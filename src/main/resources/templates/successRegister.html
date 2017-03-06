@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registration Complete</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Added User</h1>
+<!--/*@thymesVar id="user" type="User"*/-->
+<p th:text="'name: ' + ${user.username}" />
+<a href="/">Add Another user</a>
+</body>
+</html>

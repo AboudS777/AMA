@@ -1,23 +1,20 @@
 package hello;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
-/**
- * Created by sarrankanpathmanatha on 3/5/2017.
- */
+@Service
 public class UserService implements IUserService {
 
     @Autowired
     private UserRepository repository;
 
-    @Transactional
     @Override
     public User registerNewUserAccount(User account){
         User user = new User();
-        user.setFirstName(account.getFirstName());
-        user.setLastName(account.getLastName());
+        user.setUsername(account.getUsername());
         user.setPassword(account.getPassword());
-        return repository.save(user);
+        repository.save(user);
+        return user;
     }
 }
