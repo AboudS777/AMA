@@ -47,11 +47,9 @@ public class UserController {
             result.rejectValue("userName", "message.regError");
         }
         if (result.hasErrors()) {
-            //return new ModelAndView("registration", "user", accountDto);
             return "registration";
         }
         else {
-            //return new ModelAndView("successRegister", "user", accountDto);
             return "successRegister";
         }
     }
