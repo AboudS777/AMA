@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 
@@ -19,47 +16,46 @@ import javax.validation.Valid;
 public class UserController {
 
     @Autowired
-    IUserService service;
+    UserService service;
 
     @Autowired
     UserRepository repository;
 
-    @GetMapping("/")
-    public String showRegistrationForm(WebRequest request, Model model) {
-        User userDto = new User();
-        model.addAttribute("user", userDto);
-        model.addAttribute("users", repository.findAll());
+    @GetMapping("/registration")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new User());
         return "registration";
     }
 
-    @PostMapping("/")
-    public String registerUserAccount(
-            @ModelAttribute("user") @Valid User accountDto,
-            BindingResult result,
-            WebRequest request,
-            Errors errors) {
-
+    @PostMapping("/registration")
+    public String registerUserAccount(@ModelAttribute("user") @Valid User user, BindingResult result) {
         User registered = new User();
         if (!result.hasErrors()) {
-            registered = createUserAccount(accountDto, result);
+            registered = service.registerNewUserAccount(user);
         }
         if (registered == null) {
-            result.rejectValue("userName", "message.regError");
+            result.rejectValue("username", "message.regError");
         }
         if (result.hasErrors()) {
             return "registration";
         }
         else {
-            return "successRegister";
+            return "registered";
         }
     }
-    private User createUserAccount(User accountDto, BindingResult result) {
-        User registered = null;
-        registered = service.registerNewUserAccount(accountDto);
-        return registered;
+
+    @GetMapping("/login")
+    public String login(Model model) {
+        return "login";
     }
 
+    @PostMapping("/login")
+    public String loggedIn(Model model) {
+        return "hello";
+    }
 
-
-
+    @PostMapping("/registered")
+    public String registered(Model model) {
+        return "login";
+    }
 }
