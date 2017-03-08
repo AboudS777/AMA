@@ -1,22 +1,25 @@
-package hello;
+package account;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by stephanernst on 3/7/2017.
- * Provides Services for User
- */
 @Service
-public class UserDetailsServices implements UserDetailsService {
+public class UserService implements UserDetailsService {
+
     @Autowired
     private UserRepository userRepository;
 
-    public UserDetailsServices() {
-        super();
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    public User registerNewUserAccount(User user){
+        user.setUsername(user.getUsername());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 
     @Override

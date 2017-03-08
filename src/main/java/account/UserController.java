@@ -1,4 +1,4 @@
-package hello;
+package account;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,10 +16,10 @@ import javax.validation.Valid;
 public class UserController {
 
     @Autowired
-    UserService service;
+    private UserService userService;
 
     @Autowired
-    UserRepository repository;
+    private Validator validator;
 
     @GetMapping("/")
     public String home(Model model) {
@@ -34,19 +34,13 @@ public class UserController {
 
     @PostMapping("/registration")
     public String registerUserAccount(@ModelAttribute("user") @Valid User user, BindingResult result) {
-        User registered = new User();
-        if (!result.hasErrors()) {
-            registered = service.registerNewUserAccount(user);
-        }
-        if (registered == null) {
-            result.rejectValue("username", "message.regError");
-        }
+        validator.validate(user, result);
+
         if (result.hasErrors()) {
             return "registration";
         }
-        else {
-            return "registered";
-        }
+        userService.registerNewUserAccount(user);
+        return "registered";
     }
 
     @GetMapping("/login")
@@ -56,7 +50,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String loggedIn(Model model) {
-        return "hello";
+        return "account";
     }
 
     @PostMapping("/registered")
@@ -64,12 +58,12 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/hello")
+    @GetMapping("/account")
     public String hello(Model model) {
-        return "hello";
+        return "account";
     }
 
-    @PostMapping("/hello")
+    @PostMapping("/account")
     public String signOut(Model model) {
         return "home";
     }
