@@ -21,6 +21,11 @@ public class UserController {
     @Autowired
     UserRepository repository;
 
+    @GetMapping("/")
+    public String home(Model model) {
+        return "home";
+    }
+
     @GetMapping("/registration")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
@@ -57,5 +62,15 @@ public class UserController {
     @PostMapping("/registered")
     public String registered(Model model) {
         return "login";
+    }
+
+    @GetMapping("/hello")
+    public String hello(Model model) {
+        return "hello";
+    }
+
+    @PostMapping("/hello")
+    public String signOut(Model model) {
+        return "home";
     }
 }
