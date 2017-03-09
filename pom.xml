@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <version>1.5.2.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -30,8 +30,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-data-rest</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-rest</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -68,7 +68,13 @@
             <name>Spring Releases</name>
             <url>https://repo.spring.io/libs-release</url>
         </repository>
+        <repository>
+            <id>org.jboss.repository.releases</id>
+            <name>JBoss Maven Release Repository</name>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+        </repository>
     </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>spring-releases</id>

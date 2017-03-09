@@ -2,13 +2,14 @@ package account;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 /**
  * Created by Stephane on 2017-03-07.
  */
 
-@Component
+@Service
 public class Validator {
 
     @Autowired
