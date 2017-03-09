@@ -16,3 +16,6 @@ Login Form
 Encryption
 
 # Next Sprint
+Create new AMA with description
+Ask a Question on AMA
+Display list of all AMA's
