@@ -53,7 +53,7 @@ public class UserController {
         return "account";
     }
 
-    @PostMapping("/registered")
+    @GetMapping("/registered")
     public String registered(Model model) {
         return "login";
     }
@@ -63,7 +63,7 @@ public class UserController {
         return "account";
     }
 
-    @PostMapping("/account")
+    @PostMapping("/logout")
     public String signOut(Model model) {
         return "home";
     }
