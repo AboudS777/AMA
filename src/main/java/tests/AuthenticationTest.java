@@ -1,7 +1,6 @@
 package tests;
 import account.*;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import java.net.URL;
@@ -18,9 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-/**
- * Created by sarrankanpathmanatha on 3/9/2017.
- */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthenticationTest {
