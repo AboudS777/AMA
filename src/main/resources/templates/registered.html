@@ -5,9 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<h1>Added User</h1>
+<h1>Registered</h1>
 <!--/*@thymesVar id="user" type="User"*/-->
-<p th:text="'name: ' + ${user.username}" />
-<a href="/">Add Another user</a>
+<p th:text="'You are now registered as: ' + ${user.username}" />
+<a href="/login">Click here to login</a>
 </body>
 </html>
