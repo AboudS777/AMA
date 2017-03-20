@@ -16,8 +16,20 @@ public class CommentPost extends Post {
 
     public CommentPost() {this.context = null;}
 
-    public CommentPost(User op, SubmissionPost context, String text) {
+    public CommentPost(User op, Post context, String text) {
         super(op, text);
         this.context = context;
+    }
+
+    public Post getContext() {
+        return this.context;
+    }
+
+    public Post getSubmissionPost() {
+        if(this.context instanceof SubmissionPost) {
+            return this.context;
+        } else {
+            return ((CommentPost)this.context).getSubmissionPost();
+        }
     }
 }

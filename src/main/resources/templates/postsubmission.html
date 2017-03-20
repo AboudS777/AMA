@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post</title>
+</head>
+<body>
+<h1>AMA Post</h1>
+<form action="#" th:action="@{/create_submission}" th:object="${submissionPost}" method="post">
+    <p>Title: <input type="text" th:field="*{title}" /></p>
+    <p> Text Area:
+        <textarea> id = "myTextArea"
+                  rows = "3"
+                  cols = "80">Your text here
+        </textarea>
+        <input type="text" th:field="*{text}"/>
+    </p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+</body>
+</html>

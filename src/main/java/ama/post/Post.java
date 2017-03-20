@@ -10,18 +10,19 @@ import java.util.Collection;
  * Created by Stephane on 2017-03-19.
  */
 @Entity
+@Inheritance
 public abstract class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    protected final User op;
-    protected int upvotes;
-    protected int downvotes;
-    protected String text;
+    private final User op;
+    private int upvotes;
+    private int downvotes;
+    private String text;
 
     @OneToMany(cascade = CascadeType.PERSIST)
-    protected Collection<CommentPost> replies;
+    private Collection<CommentPost> replies;
 
     public Post() {op = null;}
 

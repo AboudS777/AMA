@@ -1,8 +1,6 @@
 package ama.account;
 
-import ama.post.CommentPost;
-import ama.post.PostRepository;
-import ama.post.SubmissionPost;
+import ama.post.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,7 +15,10 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private PostRepository postRepository;
+    private SubmissionPostRepository submissionPostRepository;
+
+    @Autowired
+    private CommentPostRepository commentPostRepository;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -34,10 +35,10 @@ public class UserService implements UserDetailsService {
     }
 
     public SubmissionPost createSubmissionPost(User user, String title, String text) {
-        return postRepository.save(new SubmissionPost(user, title, text));
+        return submissionPostRepository.save(new SubmissionPost(user, title, text));
     }
-
-    public CommentPost addComment(User user, SubmissionPost post, String text) {
-        return postRepository.save(new CommentPost(user, post, text));
-    }
+/*
+    public CommentPost addComment(User user, Post post, String text) {
+        return commentPostRepository.save(new CommentPost(user, post, text));
+    }*/
 }
