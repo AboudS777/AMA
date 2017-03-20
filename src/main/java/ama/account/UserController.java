@@ -1,4 +1,4 @@
-package account;
+package ama.account;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,11 +20,6 @@ public class UserController {
 
     @Autowired
     private Validator validator;
-
-    @GetMapping("/")
-    public String home(Model model) {
-        return "home";
-    }
 
     @GetMapping("/registration")
     public String showRegistrationForm(Model model) {
@@ -50,7 +45,7 @@ public class UserController {
 
     @PostMapping("/login")
     public String loggedIn(Model model) {
-        return "account";
+        return "ama";
     }
 
     @GetMapping("/registered")
@@ -58,9 +53,9 @@ public class UserController {
         return "login";
     }
 
-    @GetMapping("/account")
+    @GetMapping("/ama")
     public String hello(Model model) {
-        return "account";
+        return "ama";
     }
 
     @PostMapping("/logout")

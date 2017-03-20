@@ -1,5 +1,8 @@
-package account;
+package ama.account;
 
+import ama.post.CommentPost;
+import ama.post.PostRepository;
+import ama.post.SubmissionPost;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +17,9 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     public User registerNewUserAccount(User user){
@@ -25,5 +31,13 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username);
+    }
+
+    public SubmissionPost createSubmissionPost(User user, String title, String text) {
+        return postRepository.save(new SubmissionPost(user, title, text));
+    }
+
+    public CommentPost addComment(User user, SubmissionPost post, String text) {
+        return postRepository.save(new CommentPost(user, post, text));
     }
 }

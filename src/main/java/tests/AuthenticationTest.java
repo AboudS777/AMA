@@ -1,5 +1,5 @@
 package tests;
-import account.*;
+import ama.*;
 
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -58,7 +58,7 @@ public class AuthenticationTest {
 
     @Test
     public void viewAccount() throws Exception {
-        ResponseEntity<String> response = template.getForEntity(base.toString()+"/account",String.class);
+        ResponseEntity<String> response = template.getForEntity(base.toString()+ "/ama",String.class);
         assertThat(response.getStatusCode(),equalTo(HttpStatus.OK));
     }
 

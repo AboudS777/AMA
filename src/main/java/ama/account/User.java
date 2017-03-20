@@ -1,4 +1,4 @@
-package account;
+package ama.account;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
