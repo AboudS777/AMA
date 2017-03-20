@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 @Entity
 public class SubmissionPost extends Post {
 
-    private final String title;
+    private String title;
 
     public SubmissionPost() {this.title = null;}
 
@@ -18,4 +18,13 @@ public class SubmissionPost extends Post {
         super(op, text);
         this.title = title;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
 }

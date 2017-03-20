@@ -47,11 +47,13 @@ public abstract class Post {
         this.upvotes++;
     }
 
+    public String getText() {return text;}
+
     public void downvote() {
         this.downvotes++;
     }
 
-    public void edit(String text) {
+    public void setText(String text) {
         this.text = text;
     }
 }
