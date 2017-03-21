@@ -24,9 +24,4 @@ public class HomeController {
         model.addAttribute("submissionPosts", submissionPostRepository.findAll());
         return "home";
     }
-
-    @ModelAttribute("allSubmissions")
-    public List<SubmissionPost> getAllSubmissions() {
-        return submissionPostRepository.findAll();
-    }
 }

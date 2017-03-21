@@ -25,11 +25,12 @@ public class CommentPost extends Post {
         return this.context;
     }
 
+    /*  don't think we need this anymore
     public Post getSubmissionPost() {
         if(this.context instanceof SubmissionPost) {
             return this.context;
         } else {
             return ((CommentPost)this.context).getSubmissionPost();
         }
-    }
+    }*/
 }
