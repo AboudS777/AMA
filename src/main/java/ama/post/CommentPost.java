@@ -12,12 +12,16 @@ import javax.persistence.ManyToOne;
 public class CommentPost extends Post {
 
     @ManyToOne
-    private final Post context;
+    private Post context;
 
-    public CommentPost() {this.context = null;}
+    public CommentPost() {}
 
     public CommentPost(User op, Post context, String text) {
         super(op, text);
+        this.context = context;
+    }
+
+    public void setContext(Post post) {
         this.context = context;
     }
 

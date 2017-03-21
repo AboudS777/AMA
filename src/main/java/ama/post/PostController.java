@@ -20,19 +20,22 @@ public class PostController {
     private SubmissionPostRepository submissionPostRepository;
 
     @Autowired
+    private CommentPostRepository commentPostRepository;
+
+    @Autowired
     private Validator validator;
 
     @GetMapping("/create_submission")
     public String createAMASubmission(Model model) {
         model.addAttribute("submissionPost",new SubmissionPost());
-        return "postsubmission";
+        return "createsubmission";
     }
 
     @PostMapping("/create_submission")
     public String postAMASubmission(@ModelAttribute("submissionPost") SubmissionPost post, BindingResult result){
         validator.validate(post, result);
         if(result.hasErrors()) {
-            return "postsubmission";
+            return "createsubmission";
         }
         submissionPostRepository.save(post);
         return "redirect:/";
@@ -41,10 +44,8 @@ public class PostController {
     @GetMapping("/posts/{submission}")
     public String getSubmissionView(@PathVariable(value = "submission") String submission, Model model) {
         SubmissionPost post = submissionPostRepository.findByTitle(submission);
-        //find all comments associated with post
         if (post != null) {
             model.addAttribute("post", post);
-            //add all comments as attributes
             return "ama";
         }
         return "pageNotFound";
