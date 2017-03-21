@@ -3,6 +3,7 @@ package ama.post;
 import ama.account.User;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -12,21 +13,20 @@ import java.util.Date;
 @Entity
 public class SubmissionPost extends Post {
 
-    private String title;
-    private boolean open;
+    private String title;   //will need to validate title's upon form submission to ensure that there are no duplicate titles
     private Date votingCloses;
     private Date answerCloses;
     private ArrayList<User> usersWhoLiked = new ArrayList<User>();
 
-    public SubmissionPost() {this.title = null;}
+    public SubmissionPost() {}
 
-    public SubmissionPost(User op, String title, String text, boolean open) {
+    public SubmissionPost(User op, String title, String text) {
         super(op, text);
-        this.open = open;
         this.title = title;
         usersWhoLiked.add(op);
     }
 
+    /* title field is probably better as final*/
     public void setTitle(String title) {
         this.title = title;
     }
@@ -42,5 +42,4 @@ public class SubmissionPost extends Post {
     public void likePost(User user) {
         usersWhoLiked.add(user);
     }
-
 }

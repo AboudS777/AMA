@@ -1,6 +1,6 @@
 package ama.post;
 
-import ama.account.Validator;
+import ama.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import java.util.List;
+
 /**
  * Created by Stephane on 2017-03-19.
  */
@@ -30,14 +30,17 @@ public class PostController {
 
     @PostMapping("/create_submission")
     public String postAMASubmission(@ModelAttribute("submissionPost") SubmissionPost post, BindingResult result){
-        //need to add validation for post with result
+        validator.validate(post, result);
+        if(result.hasErrors()) {
+            return "postsubmission";
+        }
         submissionPostRepository.save(post);
-        return "home";
+        return "redirect:/";
     }
 
     @GetMapping("/posts/{submission}")
     public String getSubmissionView(@PathVariable(value = "submission") String submission, Model model) {
-        SubmissionPost post = submissionPostRepository.findByTitle(validator.parseURLParam(submission));
+        SubmissionPost post = submissionPostRepository.findByTitle(submission);
         //find all comments associated with post
         if (post != null) {
             model.addAttribute("post", post);

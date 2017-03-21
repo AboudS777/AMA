@@ -9,6 +9,7 @@
 <h1>Submit an AMA</h1>
 <form action="#" th:action="@{/create_submission}" th:object="${submissionPost}" method="post">
     <p>Title </p>
+    <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
     <p><input type="text" th:field="*{title}" /></p>
     <p><textarea th:field="*{text}">Enter description...</textarea></p>
     <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>

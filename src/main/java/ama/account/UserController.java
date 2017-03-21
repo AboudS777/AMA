@@ -1,5 +1,6 @@
 package ama.account;
 
+import ama.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,17 +46,12 @@ public class UserController {
 
     @PostMapping("/login")
     public String loggedIn(Model model) {
-        return "ama";
+        return "redirect:/account";
     }
 
-    @GetMapping("/registered")
-    public String registered(Model model) {
-        return "login";
-    }
-
-    @GetMapping("/ama")
-    public String hello(Model model) {
-        return "ama";
+    @GetMapping("/account")
+    public String viewAccount(Model model) {
+        return "account";
     }
 
     @PostMapping("/logout")

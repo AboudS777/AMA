@@ -11,7 +11,5 @@ import java.util.List;
 @Transactional
 public interface CommentPostRepository extends PostRepository {
 
-    List<CommentPost> findByContext(SubmissionPost context);
-
-    List<CommentPost> findByContext(CommentPost context);
+    List<CommentPost> findByContext(Post context);
 }

@@ -15,12 +15,6 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private SubmissionPostRepository submissionPostRepository;
-
-    @Autowired
-    private CommentPostRepository commentPostRepository;
-
-    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     public User registerNewUserAccount(User user){
@@ -33,12 +27,4 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username);
     }
-
-    public SubmissionPost createSubmissionPost(User user, String title, String text, boolean open) {
-        return submissionPostRepository.save(new SubmissionPost(user, title, text, open));
-    }
-/*
-    public CommentPost addComment(User user, Post post, String text) {
-        return commentPostRepository.save(new CommentPost(user, post, text));
-    }*/
 }
