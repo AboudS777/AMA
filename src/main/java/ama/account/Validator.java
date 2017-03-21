@@ -21,4 +21,8 @@ public class Validator {
             result.rejectValue("username", "Duplicate.user.username", "Username is already taken.");
         }
     }
+
+    public String parseURLParam(String url) {
+        return url.replaceAll("_", " ");
+    }
 }

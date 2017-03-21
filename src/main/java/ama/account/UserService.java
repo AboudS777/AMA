@@ -34,8 +34,8 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username);
     }
 
-    public SubmissionPost createSubmissionPost(User user, String title, String text) {
-        return submissionPostRepository.save(new SubmissionPost(user, title, text));
+    public SubmissionPost createSubmissionPost(User user, String title, String text, boolean open) {
+        return submissionPostRepository.save(new SubmissionPost(user, title, text, open));
     }
 /*
     public CommentPost addComment(User user, Post post, String text) {

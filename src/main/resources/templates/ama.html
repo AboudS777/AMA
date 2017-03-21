@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>This is a submission</title>
+</head>
+<body>
+<!--/*@thymesVar id="post" type="SubmissionPost"*/-->
+<h1><a th:text="${post.title}"/></h1>
+<tr>
+    <td th:text="${post.text}">1</td>
+    <td th:text="${post.text}">Text ...</td>
+</tr>
+</body>
+</html>

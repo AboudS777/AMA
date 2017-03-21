@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Welcome</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -8,8 +8,9 @@
     <h1>This is the home page</h1>
     <a href="/login">Click here to login</a>
     <a href="/registration">Or click here to register</a>
+    <p><a href="/create_submission">Submit an AMA</a></p>
     <!--/*@thymesVar id="submissionPosts" type="java.lang.Iterable"*/-->
-    <p th:each ="existingPost : ${submissionPosts}"
-       th:text="|Title : ${existingPost.title} Text: ${existingPost.text}|"/>
+    <p><a th:each ="existingPost : ${submissionPosts}"
+        th:href="@{|/posts/${existingPost.title}|}"/></p>
 </body>
 </html>
