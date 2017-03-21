@@ -22,8 +22,8 @@ public class SubmissionPost extends Post {
 
     public SubmissionPost(User op, String title, String text, boolean open) {
         super(op, text);
-        this.title = title;
         this.open = open;
+        this.title = title;
         usersWhoLiked.add(op);
     }
 

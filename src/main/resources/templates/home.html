@@ -10,7 +10,8 @@
     <a href="/registration">Or click here to register</a>
     <p><a href="/create_submission">Submit an AMA</a></p>
     <!--/*@thymesVar id="submissionPosts" type="java.lang.Iterable"*/-->
-    <p><a th:each ="existingPost : ${submissionPosts}"
-        th:href="@{|/posts/${existingPost.title}|}"/></p>
+    <tr th:each="submission : ${submissionPosts}">
+        <p><td><a th:href="@{/posts/__${submission.title}__}" th:text="${submission.title}">Title ...</a></td></p>
+    </tr>
 </body>
 </html>

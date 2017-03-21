@@ -43,17 +43,17 @@ public abstract class Post {
         return this.upvotes - this.downvotes;
     }
 
+    public String getText() {return text;}
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public void upvote() {
         this.upvotes++;
     }
 
-    public String getText() {return text;}
-
     public void downvote() {
         this.downvotes++;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 }

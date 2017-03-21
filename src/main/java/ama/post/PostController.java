@@ -30,6 +30,7 @@ public class PostController {
 
     @PostMapping("/create_submission")
     public String postAMASubmission(@ModelAttribute("submissionPost") SubmissionPost post, BindingResult result){
+        //need to add validation for post with result
         submissionPostRepository.save(post);
         return "home";
     }

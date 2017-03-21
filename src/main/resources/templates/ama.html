@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>This is a submission</title>
+    <meta charset="UTF-8"/>
+    <!--/*@thymesVar id="post" type="SubmissionPost"*/-->
+    <title th:text="${post.title}">This is a title</title>
 </head>
 <body>
-<!--/*@thymesVar id="post" type="SubmissionPost"*/-->
-<h1><a th:text="${post.title}"/></h1>
-<tr>
-    <td th:text="${post.text}">1</td>
-    <td th:text="${post.text}">Text ...</td>
-</tr>
+<h1 th:text="${post.title}">AMA Title</h1>
+<p th:text="${post.text}">ama description</p>
 </body>
 </html>
