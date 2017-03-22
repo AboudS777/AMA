@@ -8,10 +8,11 @@
 <!--/*@thymesVar id="submissionPost" type="SubmissionPost"*/-->
 <h1>Submit an AMA</h1>
 <form action="#" th:action="@{/create_submission}" th:object="${submissionPost}" method="post">
-    <p>Title </p>
+    <h2>Title</h2>
     <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
     <p><input type="text" th:field="*{title}" /></p>
-    <p><textarea th:field="*{text}">Enter description...</textarea></p>
+    <h2>Description</h2>
+    <p><textarea rows="4" cols="50" th:field="*{text}">Enter description...</textarea></p>
     <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
 </form>
 </body>

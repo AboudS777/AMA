@@ -47,9 +47,7 @@ public class PostController {
     public String getSubmissionView(@PathVariable(value = "submission") String submission, Model model) {
         SubmissionPost post = submissionPostRepository.findByTitle(submission);
         if (post != null) {
-            CommentPost comment = new CommentPost();
-            comment.setContext(post);
-            model.addAttribute("commentPost", comment);
+            model.addAttribute("commentPost", new CommentPost());
             model.addAttribute("post", post);
             model.addAttribute("baseComments", commentPostRepository.findByContext(post));
             return "ama";
@@ -58,8 +56,15 @@ public class PostController {
     }
 
     @PostMapping("/posts/{submission}")
-    public String addCommentToSubmission(@ModelAttribute("commentPost") CommentPost commentPost) {
-        commentPostRepository.save(commentPost);
-        return "redirect:/posts/{submission}";
+    public String addCommentToSubmission(@PathVariable(value = "submission") String submission,@ModelAttribute("commentPost") CommentPost commentPost) {
+        SubmissionPost post = submissionPostRepository.findByTitle(submission);
+        if (post != null){
+            commentPost.setContext(post);
+            commentPostRepository.save(commentPost);
+            return "redirect:/posts/{submission}";
+        }
+        return "pageNotFound";
+
     }
 }
+
