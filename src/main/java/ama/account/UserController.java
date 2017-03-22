@@ -1,5 +1,6 @@
-package account;
+package ama.account;
 
+import ama.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,11 +21,6 @@ public class UserController {
 
     @Autowired
     private Validator validator;
-
-    @GetMapping("/")
-    public String home(Model model) {
-        return "home";
-    }
 
     @GetMapping("/registration")
     public String showRegistrationForm(Model model) {
@@ -50,16 +46,11 @@ public class UserController {
 
     @PostMapping("/login")
     public String loggedIn(Model model) {
-        return "account";
-    }
-
-    @GetMapping("/registered")
-    public String registered(Model model) {
-        return "login";
+        return "redirect:/account";
     }
 
     @GetMapping("/account")
-    public String hello(Model model) {
+    public String viewAccount(Model model) {
         return "account";
     }
 

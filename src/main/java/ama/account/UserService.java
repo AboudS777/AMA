@@ -1,5 +1,6 @@
-package account;
+package ama.account;
 
+import ama.post.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

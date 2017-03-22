@@ -19,7 +19,7 @@ import org.springframework.util.MultiValueMap;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AuthenticationTest {
+public class SubmissionPostTest {
 
     @LocalServerPort
     private int port;
@@ -30,30 +30,30 @@ public class AuthenticationTest {
     private TestRestTemplate template;
 
     private MultiValueMap<String,Object> user;
+    private MultiValueMap<String,Object> post;
 
     @Before
     public void setUp() throws Exception {
         this.base = new URL("http://localhost:" + port + "/");
         user = new LinkedMultiValueMap<>();
+        post = new LinkedMultiValueMap<>();
         user.add("username","sarran");
         user.add("password","theman");
+        post.add("title","Hello World!");
+        post.add("text","Hi this is sarrankan! AMA!");
+        template.postForEntity(base.toString()+"/registration",user,String.class);
+        template.postForEntity(base.toString()+"/login",user,String.class);
     }
 
     @Test
-    public void registerValidUser() throws Exception {
-        ResponseEntity<String> response = template.postForEntity(base.toString()+"/registration",user,String.class);
-        assertThat(response.getStatusCode(),equalTo(HttpStatus.OK));
-    }
-
-    @Test
-    public void loginUser() throws Exception {
-        ResponseEntity<String> response = template.postForEntity(base.toString()+"/login",user,String.class);
+    public void submitPost() throws Exception {
+        ResponseEntity<String> response = template.postForEntity(base.toString()+"/create_submission",post,String.class);
         assertThat(response.getStatusCode(),equalTo(HttpStatus.FOUND));
     }
 
     @Test
-    public void viewAccount() throws Exception {
-        ResponseEntity<String> response = template.getForEntity(base.toString()+ "/ama",String.class);
+    public void viewSubmittedPost() throws Exception{
+        ResponseEntity<String> response = template.getForEntity(base.toString()+ "/posts/Hello%20World!" ,String.class);
         assertThat(response.getStatusCode(),equalTo(HttpStatus.OK));
     }
 }

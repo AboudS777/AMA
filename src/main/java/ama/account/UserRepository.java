@@ -1,4 +1,4 @@
-package account;
+package ama.account;
 
 
 import org.springframework.data.repository.CrudRepository;
