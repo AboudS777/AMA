@@ -58,7 +58,7 @@ public class PostController {
     @PostMapping("/posts/{submission}")
     public String addCommentToSubmission(@PathVariable(value = "submission") String submission,@ModelAttribute("commentPost") CommentPost commentPost) {
         SubmissionPost post = submissionPostRepository.findByTitle(submission);
-        if (post != null){
+        if (post != null && commentPost != null && commentPost.getText() != ""){
             commentPost.setContext(post);
             commentPostRepository.save(commentPost);
             return "redirect:/posts/{submission}";
