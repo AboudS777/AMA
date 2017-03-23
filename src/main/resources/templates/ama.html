@@ -5,7 +5,17 @@
     <title th:text="${post.title}">This is a title</title>
 </head>
 <body>
-<h1 th:text="${post.title}">AMA Title</h1>
-<p th:text="${post.text}">ama description</p>
+<a href="/">Home</a>
+<h1 th:text="${post.title}">AMATitle</h1>
+<h2><p th:text="${post.text}">amadescription</p></h2>
+<form action="#" th:action="@{/posts/__${submission}__}" th:object="${commentPost}" method="post">
+    <p><textarea rows="4" cols="50" th:field="*{text}">Ask your question...</textarea></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+<h2>Comments</h2>
+<!--/*@thymesVar id="baseComments" type="java.lang.Iterable"*/-->
+<tr th:each="comments : ${baseComments}">
+    <p><td><a th:text="${comments.text}">Title ...</a></td></p>
+</tr>
 </body>
 </html>

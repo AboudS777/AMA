@@ -6,9 +6,10 @@
 </head>
 <body>
     <h1>This is the home page</h1>
-    <a href="/login">Click here to login</a>
-    <a href="/registration">Or click here to register</a>
+    <a href="/login">Login</a>
+    <a href="/registration">Register</a>
     <p><a href="/create_submission">Submit an AMA</a></p>
+    <h2>Current AMAs</h2>
     <!--/*@thymesVar id="submissionPosts" type="java.lang.Iterable"*/-->
     <tr th:each="submission : ${submissionPosts}">
         <p><td><a th:href="@{/posts/__${submission.title}__}" th:text="${submission.title}">Title ...</a></td></p>

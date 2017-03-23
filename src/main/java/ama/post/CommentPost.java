@@ -22,7 +22,7 @@ public class CommentPost extends Post {
     }
 
     public void setContext(Post post) {
-        this.context = context;
+        this.context = post;
     }
 
     public Post getContext() {
