@@ -2,14 +2,23 @@ package ama.post;
 
 import ama.account.User;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.util.Collection;
 
 /**
  * Created by Stephane on 2017-03-19.
  */
 @Entity
 public class CommentPost extends Post {
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    private Collection<User> upvoters;
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    private Collection<User> downvoters;
 
     @ManyToOne
     private Post context;
@@ -29,12 +38,29 @@ public class CommentPost extends Post {
         return this.context;
     }
 
-    /*  don't think we need this anymore
-    public Post getSubmissionPost() {
-        if(this.context instanceof SubmissionPost) {
-            return this.context;
-        } else {
-            return ((CommentPost)this.context).getSubmissionPost();
+    public int getUpvotes() {
+        return this.upvoters.size();
+    }
+
+    public int getDownvotes() {
+        return this.downvoters.size();
+    }
+
+    public void upvote(User user) {
+        if(!upvoters.contains(user)) {
+            upvoters.add(user);
+            downvoters.remove(user);
         }
-    }*/
+    }
+
+    public void downvote(User user) {
+        if(!downvoters.contains(user)) {
+            downvoters.add(user);
+            upvoters.remove(user);
+        }
+    }
+
+    public int getPoints() {
+        return this.getUpvotes() - this.getDownvotes();
+    }
 }
