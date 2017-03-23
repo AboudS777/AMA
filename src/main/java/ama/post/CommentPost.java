@@ -49,12 +49,14 @@ public class CommentPost extends Post {
     public void upvote(User user) {
         if(!upvoters.contains(user)) {
             upvoters.add(user);
+            downvoters.remove(user);
         }
     }
 
     public void downvote(User user) {
         if(!downvoters.contains(user)) {
             downvoters.add(user);
+            upvoters.remove(user);
         }
     }
 
