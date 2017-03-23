@@ -100,5 +100,22 @@ public class PostController {
         }
         return "pageNotFound";
     }
+
+    @PostMapping("/comments/{id}/reply")
+    public String replyToComment(HttpServletRequest request, @PathVariable(value="id") String id, String reply) {
+        CommentPost comment = commentPostRepository.findById(Long.parseLong(id)).get(0);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username);
+        if (user != null && comment != null && reply != null && reply != "") {
+            CommentPost replyPost = new CommentPost();
+            replyPost.setContext(comment);
+            replyPost.setText(reply);
+            replyPost.setUser(user);
+            commentPostRepository.save(replyPost);
+        }
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
+    }
 }
 

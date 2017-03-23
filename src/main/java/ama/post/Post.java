@@ -16,7 +16,8 @@ public abstract class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    private final User op;
+    @ManyToOne
+    private User op;
 
     private String text;
 
@@ -34,6 +35,12 @@ public abstract class Post {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public User getUser() {return op;}
+
+    public void setUser(User user) {
+        this.op = user;
     }
 
     public Long getId() { return id; }

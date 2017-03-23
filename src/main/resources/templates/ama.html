@@ -14,10 +14,14 @@
 </form>
 <h2>Comments</h2>
 <!--/*@thymesVar id="baseComments" type="java.lang.Iterable"*/-->
-<tr th:each="comments : ${baseComments}">
-    <p><td><a th:text="${comments.text}">Title ...</a></td>
-    <td><a th:href="@{/comments/upvote(id=${comments.id})}">Upvote</a><span th:text="|(${comments.getUpvotes()})|"/> <a th:href="@{/comments/downvote(id=${comments.id})}">Downvote</a><span th:text="|(${comments.getDownvotes()})|"/> </td>
+<div th:each="comments : ${baseComments}">
+    <p><a th:text="${comments.text}">Title ...</a>
+    <a th:href="@{/comments/upvote(id=${comments.id})}">Upvote</a><span th:text="|(${comments.getUpvotes()})|"/> <a th:href="@{/comments/downvote(id=${comments.id})}">Downvote</a><span th:text="|(${comments.getDownvotes()})|"/>
     </p>
-</tr>
+    <form th:action="@{/comments/__${comments.id}__/reply}" method="post">
+        <p><input type="text" name="reply" /></p>
+        <p><input type="submit" value="Reply" /></p>
+    </form>
+</div>
 </body>
 </html>
