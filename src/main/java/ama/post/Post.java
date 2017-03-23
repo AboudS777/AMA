@@ -21,7 +21,7 @@ public abstract class Post {
 
     private String text;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="context", cascade = CascadeType.PERSIST)
     private Collection<CommentPost> replies;
 
     public Post() {op = null;}
@@ -44,4 +44,12 @@ public abstract class Post {
     }
 
     public Long getId() { return id; }
+
+    public Collection<CommentPost> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(Collection<CommentPost> replies) {
+        this.replies = replies;
+    }
 }
