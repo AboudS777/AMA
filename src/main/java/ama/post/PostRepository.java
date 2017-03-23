@@ -15,4 +15,5 @@ import java.util.List;
 public interface PostRepository<T extends Post> extends CrudRepository<T, Long> {
     List<T> findByOp(User user);
     List<T> findAll();
+    List<T> findById(long id);
 }

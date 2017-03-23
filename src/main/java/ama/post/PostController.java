@@ -1,15 +1,17 @@
 package ama.post;
 
+import ama.account.User;
+import ama.account.UserRepository;
 import ama.validation.Validator;
+import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -23,6 +25,9 @@ public class PostController {
 
     @Autowired
     private CommentPostRepository commentPostRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private Validator validator;
@@ -64,7 +69,36 @@ public class PostController {
             return "redirect:/posts/{submission}";
         }
         return "pageNotFound";
+    }
 
+    @GetMapping("/comments/upvote")
+    public String upvoteComment(HttpServletRequest request, @RequestParam("id") String commentId) {
+        CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId)).get(0);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username);
+        if (user != null && comment != null) {
+            comment.upvote(user);
+            commentPostRepository.save(comment);
+            String referer = request.getHeader("Referer");
+            return "redirect:" + referer;
+        }
+        return "pageNotFound";
+    }
+
+    @GetMapping("/comments/downvote")
+    public String downvoteComment(HttpServletRequest request, @RequestParam("id") String commentId) {
+        CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId)).get(0);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username);
+        if (user != null && comment != null) {
+            comment.downvote(user);
+            commentPostRepository.save(comment);
+            String referer = request.getHeader("Referer");
+            return "redirect:" + referer;
+        }
+        return "pageNotFound";
     }
 }
 

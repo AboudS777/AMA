@@ -15,7 +15,9 @@
 <h2>Comments</h2>
 <!--/*@thymesVar id="baseComments" type="java.lang.Iterable"*/-->
 <tr th:each="comments : ${baseComments}">
-    <p><td><a th:text="${comments.text}">Title ...</a></td></p>
+    <p><td><a th:text="${comments.text}">Title ...</a></td>
+    <td><a th:href="@{/comments/upvote(id=${comments.id})}">Upvote</a><span th:text="|(${comments.getUpvotes()})|"/> <a th:href="@{/comments/downvote(id=${comments.id})}">Downvote</a><span th:text="|(${comments.getDownvotes()})|"/> </td>
+    </p>
 </tr>
 </body>
 </html>
