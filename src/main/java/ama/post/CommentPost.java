@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -23,7 +24,10 @@ public class CommentPost extends Post {
     @ManyToOne
     private Post context;
 
-    public CommentPost() {}
+    public CommentPost() {
+        this.upvoters = new ArrayList<>();
+        this.downvoters = new ArrayList<>();
+    }
 
     public CommentPost(User op, Post context, String text) {
         super(op, text);
