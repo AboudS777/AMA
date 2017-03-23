@@ -64,7 +64,6 @@ public class PostController {
             return "redirect:/posts/{submission}";
         }
         return "pageNotFound";
-
     }
 }
 
