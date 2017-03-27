@@ -16,11 +16,12 @@ public abstract class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    private final User op;
+    @ManyToOne
+    private User op;
 
     private String text;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="context", cascade = CascadeType.PERSIST)
     private Collection<CommentPost> replies;
 
     public Post() {op = null;}
@@ -36,5 +37,19 @@ public abstract class Post {
         this.text = text;
     }
 
+    public User getUser() {return op;}
+
+    public void setUser(User user) {
+        this.op = user;
+    }
+
     public Long getId() { return id; }
+
+    public Collection<CommentPost> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(Collection<CommentPost> replies) {
+        this.replies = replies;
+    }
 }
