@@ -60,7 +60,7 @@ public class TestValidator {
         sarran.setUsername("s");
         result = new BeanPropertyBindingResult(sarran,"sarran");
         validator.validate(sarran,result);
-        assertEquals(result.hasErrors(),true);
+        assertEquals(result.hasFieldErrors("username"),true);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class TestValidator {
         sarran.setPassword("p");
         result = new BeanPropertyBindingResult(sarran,"sarran");
         validator.validate(sarran,result);
-        assertEquals(result.hasErrors(),true);
+        assertEquals(result.hasFieldErrors("password"),true);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class TestValidator {
         User newUser = new User(sarran.getUsername(),sarran.getPassword());
         result = new BeanPropertyBindingResult(newUser,"newUser");
         validator.validate(newUser,result);
-        assertEquals(result.hasErrors(),true);
+        assertEquals(result.hasFieldErrors("username"),true);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class TestValidator {
         submissionPost.setText("Description");
         result = new BeanPropertyBindingResult(submissionPost,"submissionPost");
         validator.validate(submissionPost,result);
-        assertEquals(result.hasErrors(),true);
+        assertEquals(result.hasFieldErrors("title"),true);
     }
 
     @Test
@@ -106,7 +106,7 @@ public class TestValidator {
         newPost.setTitle(submissionPost.getTitle());
         result = new BeanPropertyBindingResult(newPost,"newPost");
         validator.validate(newPost,result);
-        assertEquals(result.hasErrors(),true);
+        assertEquals(result.hasFieldErrors("title"),true);
     }
 
 }
