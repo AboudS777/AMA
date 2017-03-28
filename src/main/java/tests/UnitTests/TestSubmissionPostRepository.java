@@ -33,7 +33,7 @@ public class TestSubmissionPostRepository {
     }
 
     @Test
-    public void testCommentPost() throws Exception {
+    public void testSubmissionPost() throws Exception {
         assertNotNull(submissionPost);
     }
 
