@@ -3,8 +3,9 @@ package ama.post;
 import ama.account.User;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Stephane on 2017-03-19.
@@ -17,14 +18,13 @@ public class SubmissionPost extends Post {
     private Date answerCloses;
 
     @ManyToMany
-    private Collection<User> usersWhoLiked;
+    private Set<User> usersWhoLiked = new HashSet<>();
 
     public SubmissionPost() {}
 
     public SubmissionPost(User op, String title, String text) {
         super(op, text);
         this.title = title;
-        usersWhoLiked.add(op);
     }
 
     /* title field is probably better as final*/

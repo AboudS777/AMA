@@ -3,6 +3,7 @@ package ama.post;
 import ama.account.User;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -21,7 +22,7 @@ public abstract class Post {
     private String text;
 
     @OneToMany(mappedBy="context", cascade = CascadeType.PERSIST)
-    private Collection<CommentPost> replies;
+    private Collection<CommentPost> replies = new ArrayList<>();
 
     public Post() {op = null;}
 
