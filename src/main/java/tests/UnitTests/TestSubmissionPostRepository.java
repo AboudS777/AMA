@@ -1,8 +1,6 @@
 package tests.UnitTests;
 
 import ama.Application;
-import ama.account.User;
-import ama.account.UserRepository;
 import ama.post.SubmissionPost;
 import ama.post.SubmissionPostRepository;
 import org.junit.After;
@@ -12,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
