@@ -1,5 +1,6 @@
 package ama.account;
 
+import ama.post.SubmissionPostRepository;
 import ama.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,9 @@ public class UserController {
     private UserService userService;
 
     @Autowired
+    private SubmissionPostRepository submissionPostRepository;
+
+    @Autowired
     private Validator validator;
 
     @GetMapping("/registration")
@@ -37,6 +41,19 @@ public class UserController {
         }
         userService.registerNewUserAccount(user);
         return "registered";
+    }
+
+    @GetMapping("/user/{username}")
+    public String viewUserAccount(@PathVariable(value = "username") String username, Model model) {
+        User user = userService.loadUserByUsername(username);
+        if (!username.equals("") && user != null) {
+            model.addAttribute("user", user);
+            model.addAttribute("submissionPosts", submissionPostRepository.findByOp(user));
+            // add attribute for liked submission posts model.addAttribute("likedPosts", submissionPostRepository.findAllByUsersWhoLiked(user));
+            // add attribute for posted questions and replies model.addAttribute("");
+            return "user";
+        }
+        return "pageNotFound";
     }
 
     @GetMapping("/login")

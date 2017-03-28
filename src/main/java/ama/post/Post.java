@@ -3,7 +3,6 @@ package ama.post;
 import ama.account.User;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -37,16 +36,16 @@ public abstract class Post {
         this.text = text;
     }
 
-    public User getUser() {return op;}
+    public User getOp() {return this.op;}
 
-    public void setUser(User user) {
-        this.op = user;
+    public void setOp(User op) {
+        this.op = op;
     }
 
     public Long getId() { return id; }
 
     public Collection<CommentPost> getReplies() {
-        return replies;
+        return this.replies;
     }
 
     public void setReplies(Collection<CommentPost> replies) {

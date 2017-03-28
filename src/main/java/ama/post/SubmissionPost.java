@@ -2,9 +2,8 @@ package ama.post;
 
 import ama.account.User;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.ArrayList;
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -13,10 +12,12 @@ import java.util.Date;
 @Entity
 public class SubmissionPost extends Post {
 
-    private String title;   //will need to validate title's upon form submission to ensure that there are no duplicate titles
+    private String title;
     private Date votingCloses;
     private Date answerCloses;
-    private ArrayList<User> usersWhoLiked = new ArrayList<User>();
+
+    @ManyToMany
+    private Collection<User> usersWhoLiked;
 
     public SubmissionPost() {}
 
