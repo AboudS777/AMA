@@ -22,7 +22,7 @@ public abstract class Post {
     private String text;
 
     @OneToMany(mappedBy="context", cascade = CascadeType.PERSIST)
-    private Collection<CommentPost> replies;
+    private Collection<CommentPost> replies = new ArrayList<>();
 
     public Post() {op = null;}
 
@@ -37,16 +37,16 @@ public abstract class Post {
         this.text = text;
     }
 
-    public User getUser() {return op;}
+    public User getOp() {return this.op;}
 
-    public void setUser(User user) {
-        this.op = user;
+    public void setOp(User op) {
+        this.op = op;
     }
 
     public Long getId() { return id; }
 
     public Collection<CommentPost> getReplies() {
-        return replies;
+        return this.replies;
     }
 
     public void setReplies(Collection<CommentPost> replies) {

@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @Service
 public class Validator {
 
@@ -18,6 +21,11 @@ public class Validator {
     private SubmissionPostRepository submissionPostRepository;
 
     public void validate(User user, BindingResult result) {
+        Pattern p = Pattern.compile("[^a-z0-9]", Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(user.getUsername());
+        if (m.find()) {
+            result.rejectValue("username", "SpecialChar.user.username", "Username cannot contain any special characters.");
+        }
         if (user.getUsername().length() < 2 || user.getUsername().length() > 20) {
             result.rejectValue("username", "Size.user.username", "Username must be between 2 and 20 characters.");
         }
@@ -30,8 +38,8 @@ public class Validator {
     }
 
     public void validate(SubmissionPost post, BindingResult result) {
-        if (post.getTitle().length() < 4 || post.getTitle().length() > 20) {
-            result.rejectValue("title", "Size.post.title", "Title must be between 4 and 20 characters.");
+        if (post.getTitle().length() < 4 || post.getTitle().length() > 60) {
+            result.rejectValue("title", "Size.post.title", "Title must be between 4 and 60 characters.");
         }
         if (submissionPostRepository.findByTitle(post.getTitle()) != null) {
             result.rejectValue("title", "Duplicate.post.title", "An AMA with this title already exists.");

@@ -12,7 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * Created by Stephane on 2017-03-19.
@@ -41,11 +40,17 @@ public class PostController {
     @PostMapping("/create_submission")
     public String postAMASubmission(@ModelAttribute("submissionPost") SubmissionPost post, BindingResult result){
         validator.validate(post, result);
-        if(result.hasErrors()) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username);
+        if(result.hasErrors()||user == null) {
             return "createsubmission";
+        } else {
+            post.setOp(user);
+            submissionPostRepository.save(post);
+            return "redirect:/";
         }
-        submissionPostRepository.save(post);
-        return "redirect:/";
     }
 
     @GetMapping("/posts/{submission}")
@@ -63,8 +68,12 @@ public class PostController {
     @PostMapping("/posts/{submission}")
     public String addCommentToSubmission(@PathVariable(value = "submission") String submission,@ModelAttribute("commentPost") CommentPost commentPost) {
         SubmissionPost post = submissionPostRepository.findByTitle(submission);
-        if (post != null && commentPost != null && commentPost.getText() != ""){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username);
+        if (post != null && commentPost != null && !commentPost.getText().equals("")){
             commentPost.setContext(post);
+            commentPost.setOp(user);
             commentPostRepository.save(commentPost);
             return "redirect:/posts/{submission}";
         }
@@ -73,7 +82,7 @@ public class PostController {
 
     @GetMapping("/comments/upvote")
     public String upvoteComment(HttpServletRequest request, @RequestParam("id") String commentId) {
-        CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId)).get(0);
+        CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userRepository.findByUsername(username);
@@ -88,7 +97,7 @@ public class PostController {
 
     @GetMapping("/comments/downvote")
     public String downvoteComment(HttpServletRequest request, @RequestParam("id") String commentId) {
-        CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId)).get(0);
+        CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userRepository.findByUsername(username);
@@ -103,15 +112,12 @@ public class PostController {
 
     @PostMapping("/comments/{id}/reply")
     public String replyToComment(HttpServletRequest request, @PathVariable(value="id") String id, String reply) {
-        CommentPost comment = commentPostRepository.findById(Long.parseLong(id)).get(0);
+        CommentPost context = commentPostRepository.findById(Long.parseLong(id));
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userRepository.findByUsername(username);
-        if (user != null && comment != null && reply != null && reply != "") {
-            CommentPost replyPost = new CommentPost();
-            replyPost.setContext(comment);
-            replyPost.setText(reply);
-            replyPost.setUser(user);
+        if (user != null && context != null && reply != null && !reply.equals("")) {
+            CommentPost replyPost = new CommentPost(user, context, reply);
             commentPostRepository.save(replyPost);
         }
         String referer = request.getHeader("Referer");

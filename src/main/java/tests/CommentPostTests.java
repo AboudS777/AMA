@@ -1,65 +1,63 @@
 package tests;
 
 import ama.Application;
-import ama.post.CommentPost;
-import ama.post.Post;
-import ama.post.SubmissionPost;
+import ama.post.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.net.URL;
-import java.net.URLEncoder;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Created by sarrankanpathmanatha on 3/22/2017.
  */
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
+@WebAppConfiguration
+@SpringBootTest(classes = Application.class)
 public class CommentPostTests {
-    @LocalServerPort
-    private int port;
-
-    private URL base;
 
     @Autowired
-    private TestRestTemplate template;
+    private WebApplicationContext context;
 
-    private MultiValueMap<String,Object> user;
-    private SubmissionPost post;
+    @Autowired
+    SubmissionPostRepository submissionPostRepository;
+
+    @Autowired
+    CommentPostRepository commentPostRepository;
+
+    private MockMvc mvc;
 
     @Before
-    public void setUp() throws Exception {
-        this.base = new URL("http://localhost:" + port + "/");
-        user = new LinkedMultiValueMap<>();
-        post = new SubmissionPost();
-        user.add("username","sarran");
-        user.add("password","theman");
-        post.setTitle("HelloWorld");
-        post.setText("Hi this is sarrankan! AMA!");
-        template.postForEntity(base.toString()+"/registration",user,String.class);
-        template.postForEntity(base.toString()+"/login",user,String.class);
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
     }
 
     @Test
-    public void addComment() throws Exception {
+    public void testBaseCommentPost() throws Exception {
+        SubmissionPost post = new SubmissionPost();
+        post.setTitle("This is my AMA.");
+        post.setText("Test text.");
+        submissionPostRepository.save(post);
+        post = submissionPostRepository.findAll().get(0);
         CommentPost comment = new CommentPost();
+        comment.setText("This is a test comment.");
         comment.setContext(post);
-        comment.setText("This is a test comment");
-        ResponseEntity<String> response = template.postForEntity(base.toString()+"/posts/" + URLEncoder.encode(post.toString(), "UTF-8").toString(), comment, String.class);
-        assertThat(response.getStatusCode(),equalTo(HttpStatus.FOUND));
+        mvc.perform(post("/posts/" + post.getTitle(), comment).with(user("user"))).andExpect(status().isOk());
     }
 }

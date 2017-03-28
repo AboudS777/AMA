@@ -2,10 +2,10 @@ package ama.post;
 
 import ama.account.User;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Stephane on 2017-03-19.
@@ -13,20 +13,20 @@ import java.util.Date;
 @Entity
 public class SubmissionPost extends Post {
 
-    private String title;   //will need to validate title's upon form submission to ensure that there are no duplicate titles
+    private String title;
     private Date votingCloses;
     private Date answerCloses;
-    private ArrayList<User> usersWhoLiked = new ArrayList<User>();
+
+    @ManyToMany
+    private Set<User> usersWhoLiked = new HashSet<>();
 
     public SubmissionPost() {}
 
     public SubmissionPost(User op, String title, String text) {
         super(op, text);
         this.title = title;
-        usersWhoLiked.add(op);
     }
 
-    /* title field is probably better as final*/
     public void setTitle(String title) {
         this.title = title;
     }

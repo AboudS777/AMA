@@ -9,6 +9,9 @@
     <a href="/login">Login</a>
     <a href="/registration">Register</a>
     <p><a href="/create_submission">Submit an AMA</a></p>
+    <p th:if="${currentUser != null}">
+        <a th:href="@{/user/__${currentUser.username}__}">My Summary</a>
+    </p>
     <h2>Current AMAs</h2>
     <!--/*@thymesVar id="submissionPosts" type="java.lang.Iterable"*/-->
     <tr th:each="submission : ${submissionPosts}">
