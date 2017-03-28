@@ -27,7 +27,6 @@ public class SubmissionPost extends Post {
         this.title = title;
     }
 
-    /* title field is probably better as final*/
     public void setTitle(String title) {
         this.title = title;
     }

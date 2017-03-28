@@ -49,8 +49,6 @@ public class UserController {
         if (!username.equals("") && user != null) {
             model.addAttribute("user", user);
             model.addAttribute("submissionPosts", submissionPostRepository.findByOp(user));
-            // add attribute for liked submission posts model.addAttribute("likedPosts", submissionPostRepository.findAllByUsersWhoLiked(user));
-            // add attribute for posted questions and replies model.addAttribute("");
             return "user";
         }
         return "pageNotFound";
