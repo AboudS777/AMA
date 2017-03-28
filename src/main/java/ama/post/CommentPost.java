@@ -29,6 +29,8 @@ public class CommentPost extends Post {
     public CommentPost(User op, Post context, String text) {
         super(op, text);
         this.context = context;
+        this.upvoters = new ArrayList<>();
+        this.downvoters = new ArrayList<>();
     }
 
     public void setContext(Post post) {
