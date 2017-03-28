@@ -1,30 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
     <meta charset="UTF-8"/>
     <title th:text="${post.title}">This is a title</title>
 </head>
 <body>
-<a href="/">Home</a>
-<h1 th:text="${post.title}">AMATitle</h1>
-<h2><p th:text="${post.text}">amadescription</p></h2>
-<form action="#" th:action="@{/posts/__${submission}__}" th:object="${commentPost}" method="post">
-    <p><textarea rows="4" cols="50" th:field="*{text}">Ask your question...</textarea></p>
-    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-</form>
-<h2>Comments</h2>
-<!--/*@thymesVar id="baseComments" type="java.lang.Iterable"*/-->
-<div th:each="comment : ${baseComments}">
-    <p><a th:href="@{/user/__${comment.op.username}__}" th:text="|${comment.op.username}|"></a></p>
-    <p><a th:text="${comment.text}">Title ...</a>
-    <a th:href="@{/comments/upvote(id=${comment.id})}">Upvote</a><span th:text="|(${comment.getUpvotes()})|"/> <a th:href="@{/comments/downvote(id=${comment.id})}">Downvote</a><span th:text="|(${comment.getDownvotes()})|"/>
-    </p>
-    <form th:action="@{/comments/__${comment.id}__/reply}" method="post">
-        <p><input type="text" name="reply" /><input type="submit" value="Reply" /></p>
+<div class="container-fluid">
+    <a href="/">Home</a>
+    <h1 th:text="${post.title}">AMATitle</h1>
+    <h2><p th:text="${post.text}">amadescription</p></h2>
+    <form action="#" th:action="@{/posts/__${submission}__}" th:object="${commentPost}" method="post">
+        <p><textarea rows="4" cols="50" th:field="*{text}">Ask your question...</textarea></p>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
-    <div style="padding-left: 4em" th:each="reply : ${comment.getReplies()}">
-        <p th:text="${reply.text}"></p>
+    <h2>Comments</h2>
+
+    <div class="panel panel-default">
+        <ul class="list-group">
+            <!--/*@thymesVar id="baseComments" type="java.lang.Iterable"*/-->
+            <li class="list-group-item" th:each="comment : ${baseComments}">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <span th:href="@{/user/__${comment.op.username}__}" th:text="|${comment.op.username}|"></span>
+                        <span th:text="|${comment.text} |"></span>
+                        <span th:text="|(${comment.getPoints()}) |"/><a th:href="@{/comments/upvote(id=${comment.id})}">Upvote</a> <a th:href="@{/comments/downvote(id=${comment.id})}">Downvote</a>
+                        <form th:action="@{/comments/__${comment.id}__/reply}" method="post">
+                            <input type="text" name="reply" /><input type="submit" value="Reply" />
+                        </form>
+                    </div>
+                    <div class="panel-footer">
+                        <div style="background-color: #fff;" class="well well-sm" th:each="reply : ${comment.getSortedReplies()}">
+                            <span th:text="|${reply.text} |"/><span th:text="|(${reply.getPoints()}) |"/><a th:href="@{/comments/upvote(id=${reply.id})}">Upvote</a> <a th:href="@{/comments/downvote(id=${reply.id})}">Downvote</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </div>
 </body>
+
 </html>

@@ -5,6 +5,8 @@ import ama.account.User;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
 
 /**
  * Created by Stephane on 2017-03-19.
@@ -22,7 +24,7 @@ public abstract class Post {
     private String text;
 
     @OneToMany(mappedBy="context", cascade = CascadeType.PERSIST)
-    private Collection<CommentPost> replies = new ArrayList<>();
+    private List<CommentPost> replies;
 
     public Post() {op = null;}
 
@@ -45,11 +47,17 @@ public abstract class Post {
 
     public Long getId() { return id; }
 
-    public Collection<CommentPost> getReplies() {
-        return this.replies;
+    public List<CommentPost> getReplies() {
+        return replies;
     }
 
-    public void setReplies(Collection<CommentPost> replies) {
+    public void setReplies(List<CommentPost> replies) {
         this.replies = replies;
+    }
+
+    public Collection<CommentPost> getSortedReplies() {
+        List<CommentPost> replies = getReplies();
+        replies.sort(new CommentPostComparator());
+        return replies;
     }
 }
