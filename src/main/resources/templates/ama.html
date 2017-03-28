@@ -17,13 +17,13 @@
 <div th:each="comment : ${baseComments}">
     <p><a th:href="@{/user/__${comment.op.username}__}" th:text="|${comment.op.username}|"></a></p>
     <p><a th:text="${comment.text}">Title ...</a>
-    <a th:href="@{/comments/upvote(id=${comment.id})}">Upvote</a><span th:text="|(${comment.getUpvotes()})|"/> <a th:href="@{/comments/downvote(id=${comment.id})}">Downvote</a><span th:text="|(${comment.getDownvotes()})|"/>
+    <span th:text="|(${comment.getPoints()}) |"/><a th:href="@{/comments/upvote(id=${comment.id})}">Upvote</a> <a th:href="@{/comments/downvote(id=${comment.id})}">Downvote</a>
     </p>
     <form th:action="@{/comments/__${comment.id}__/reply}" method="post">
         <p><input type="text" name="reply" /><input type="submit" value="Reply" /></p>
     </form>
-    <div style="padding-left: 4em" th:each="reply : ${comment.getReplies()}">
-        <p th:text="${reply.text}"></p>
+    <div style="padding-left: 4em" th:each="reply : ${comment.getSortedReplies()}">
+        <p><span th:text="|${reply.text} |"/><span th:text="|(${reply.getPoints()}) |"/><a th:href="@{/comments/upvote(id=${reply.id})}">Upvote</a> <a th:href="@{/comments/downvote(id=${reply.id})}">Downvote</a></p>
     </div>
 </div>
 </body>
