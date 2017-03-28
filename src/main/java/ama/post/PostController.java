@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * Created by Stephane on 2017-03-19.
@@ -40,7 +41,6 @@ public class PostController {
     @PostMapping("/create_submission")
     public String postAMASubmission(@ModelAttribute("submissionPost") SubmissionPost post, BindingResult result){
         validator.validate(post, result);
-
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userRepository.findByUsername(username);
@@ -59,7 +59,7 @@ public class PostController {
         if (post != null) {
             model.addAttribute("commentPost", new CommentPost());
             model.addAttribute("post", post);
-            model.addAttribute("baseComments", commentPostRepository.findByContext(post));
+            model.addAttribute("baseComments", getBaseComments(post));
             return "ama";
         }
         return "pageNotFound";
@@ -116,7 +116,7 @@ public class PostController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userRepository.findByUsername(username);
-        if (user != null && context != null && reply != null && !reply.equals("")) {
+        if (user != null && context != null && reply != null && reply != "") {
             CommentPost replyPost = new CommentPost(user, context, reply);
             commentPostRepository.save(replyPost);
         }
