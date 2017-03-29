@@ -17,6 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -59,7 +61,11 @@ public class CommentVoteTests {
         post.setText("hello");
         postRepository.save(post);
         post = postRepository.findAll().get(0);
-        mvc.perform(get("/comments/upvote").param("id", post.getId().toString()).with(user("user"))).andExpect(status().isOk());
+        mvc.perform(get("/comments/upvote")
+                .param("id", post.getId().toString())
+                .with(csrf())
+                .with(user("user")))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -68,6 +74,10 @@ public class CommentVoteTests {
         post.setText("hello");
         postRepository.save(post);
         post = postRepository.findAll().get(0);
-        mvc.perform(get("/comments/downvote").param("id", post.getId().toString()).with(user("user"))).andExpect(status().isOk());
+        mvc.perform(get("/comments/downvote")
+                .param("id", post.getId().toString())
+                .with(csrf())
+                .with(user("user")))
+                .andExpect(status().isOk());
     }
 }
