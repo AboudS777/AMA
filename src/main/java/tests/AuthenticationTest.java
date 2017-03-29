@@ -3,7 +3,20 @@ package tests;
 import ama.*;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.net.URL;
+
+import ama.account.User;
+import ama.account.UserRepository;
+import ama.account.UserService;
+import ama.post.CommentPostRepository;
+import ama.post.SubmissionPostRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,47 +26,60 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.context.WebApplicationContext;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+import javax.transaction.Transactional;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
+@WebAppConfiguration
+@SpringBootTest(classes = Application.class)
 public class AuthenticationTest {
 
-    @LocalServerPort
-    private int port;
-
-    private URL base;
+    @Autowired
+    private WebApplicationContext context;
 
     @Autowired
-    private TestRestTemplate template;
+    private UserService userService;
 
-    private MultiValueMap<String,Object> user;
+    private MockMvc mvc;
 
     @Before
-    public void setUp() throws Exception {
-        this.base = new URL("http://localhost:" + port + "/");
-        user = new LinkedMultiValueMap<>();
-        user.add("username","sarran");
-        user.add("password","theman");
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
     }
 
     @Test
-    public void registerValidUser() throws Exception {
-        ResponseEntity<String> response = template.postForEntity(base.toString()+"/registration",user,String.class);
-        assertThat(response.getStatusCode(),equalTo(HttpStatus.OK));
+    public void testLoginValidUser() throws Exception {
+        User user = new User("sarran", "theman");
+        userService.registerNewUserAccount(user);
+        mvc
+                .perform(formLogin().user("sarran").password("theman"))
+                .andExpect(authenticated());
     }
 
     @Test
-    public void loginUser() throws Exception {
-        ResponseEntity<String> response = template.postForEntity(base.toString()+"/login",user,String.class);
-        assertThat(response.getStatusCode(),equalTo(HttpStatus.FOUND));
+    public void testLoginInvalidUser() throws Exception {
+        mvc
+                .perform(formLogin().password("invalid"))
+                .andExpect(unauthenticated());
     }
 
     @Test
-    public void viewAccount() throws Exception {
-        ResponseEntity<String> response = template.getForEntity(base.toString()+ "/ama",String.class);
-        assertThat(response.getStatusCode(),equalTo(HttpStatus.OK));
+    public void testLogout() throws Exception {
+        mvc
+                .perform(logout()).andExpect(unauthenticated());
     }
 }

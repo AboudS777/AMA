@@ -1,6 +1,8 @@
 package tests;
 
 import ama.Application;
+import ama.account.User;
+import ama.account.UserService;
 import ama.post.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +16,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * Created by sarrankanpathmanatha on 3/22/2017.
@@ -41,6 +47,9 @@ public class CommentPostTests {
     @Autowired
     CommentPostRepository commentPostRepository;
 
+    @Autowired
+    UserService userService;
+
     private MockMvc mvc;
 
     @Before
@@ -49,20 +58,68 @@ public class CommentPostTests {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+
+        userService.registerNewUserAccount(new User("user", "pass"));
     }
 
     @Test
-    public void testAddCommentToSubmission() throws Exception {
+    public void testAddCommentToValidSubmission() throws Exception {
         SubmissionPost post = new SubmissionPost();
-        post.setTitle("This is my AMA.");
+        post.setTitle("This is my AMA");
         post.setText("Test text.");
         submissionPostRepository.save(post);
-        post = submissionPostRepository.findAll().get(0);
+        mvc
+                .perform(post("/posts/" + post.getTitle())
+                        .with(csrf())
+                        .with(user("user"))
+                        .param("text", "This is a test comment"))
+                .andExpect(view().name("redirect:/posts/{submission}"));
+    }
+
+    @Test
+    public void testAddCommentToInvalidSubmission() throws Exception {
+        mvc
+                .perform(post("/posts/invalid")
+                        .with(csrf())
+                        .with(user("user"))
+                        .param("text", "This is a test comment"))
+                .andExpect(view().name("pageNotFound"));
+    }
+
+    @Test
+    public void testAddInvalidCommentToValidSubmission() throws Exception {
+        SubmissionPost post = new SubmissionPost();
+        post.setTitle("This is my AMA");
+        post.setText("Test text.");
+        submissionPostRepository.save(post);
+        mvc
+                .perform(post("/posts/" + post.getTitle())
+                        .with(csrf())
+                        .with(user("user"))
+                        .param("text", ""))
+                .andExpect(view().name("pageNotFound"));
+    }
+
+    @Test
+    public void testReplyToValidComment() throws Exception {
         CommentPost comment = new CommentPost();
-        comment.setText("This is a test comment.");
-        comment.setContext(post);
-        mvc.perform(post("/posts/" + post.getTitle())
-                .param("text", "This is a test comment.")
-                .with(user("user"))).andExpect(status().isOk());
+        comment.setText("this is a base comment.");
+        comment = commentPostRepository.save(comment);
+        mvc
+                .perform(post("/comments/" + comment.getId().toString() + "/reply")
+                        .with(csrf())
+                        .with(user("user"))
+                        .param("reply", "this is a reply"))
+                .andExpect(view().name("redirect:null"));
+    }
+
+    @Test
+    public void testReplyToInValidComment() throws Exception {
+        mvc
+                .perform(post("/comments/2/reply")
+                        .with(csrf())
+                        .with(user("user"))
+                        .param("reply", "this is a reply"))
+                .andExpect(view().name("pageNotFound"));
     }
 }
