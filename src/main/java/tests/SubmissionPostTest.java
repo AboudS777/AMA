@@ -1,59 +1,55 @@
 package tests;
 
 import ama.*;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import java.net.URL;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import ama.post.CommentPostRepository;
+import ama.post.SubmissionPostRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
+@WebAppConfiguration
+@SpringBootTest(classes = Application.class)
 public class SubmissionPostTest {
-
-    @LocalServerPort
-    private int port;
-
-    private URL base;
+    @Autowired
+    private WebApplicationContext context;
 
     @Autowired
-    private TestRestTemplate template;
+    SubmissionPostRepository submissionPostRepository;
 
-    private MultiValueMap<String,Object> user;
-    private MultiValueMap<String,Object> post;
+    @Autowired
+    CommentPostRepository commentPostRepository;
+
+    private MockMvc mvc;
 
     @Before
-    public void setUp() throws Exception {
-        this.base = new URL("http://localhost:" + port + "/");
-        user = new LinkedMultiValueMap<>();
-        post = new LinkedMultiValueMap<>();
-        user.add("username","sarran");
-        user.add("password","theman");
-        post.add("title","Hello World!");
-        post.add("text","Hi this is sarrankan! AMA!");
-        template.postForEntity(base.toString()+"/registration",user,String.class);
-        template.postForEntity(base.toString()+"/login",user,String.class);
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
     }
 
     @Test
-    public void submitPost() throws Exception {
-        ResponseEntity<String> response = template.postForEntity(base.toString()+"/create_submission",post,String.class);
-        assertThat(response.getStatusCode(),equalTo(HttpStatus.FOUND));
-    }
-
-    @Test
-    public void viewSubmittedPost() throws Exception{
-        ResponseEntity<String> response = template.getForEntity(base.toString()+ "/posts/Hello%20World!" ,String.class);
-        assertThat(response.getStatusCode(),equalTo(HttpStatus.OK));
+    public void testPostAMASubmission() throws Exception {
+        mvc.perform(post("/create_submission")
+                .param("title", "AMA Title")
+                .param("text", "AMA Text")
+                .with(user("user")))
+                .andExpect(status().isOk());
     }
 }

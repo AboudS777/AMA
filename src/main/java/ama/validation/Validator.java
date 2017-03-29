@@ -38,8 +38,8 @@ public class Validator {
     }
 
     public void validate(SubmissionPost post, BindingResult result) {
-        if (post.getTitle().length() < 4 || post.getTitle().length() > 60) {
-            result.rejectValue("title", "Size.post.title", "Title must be between 4 and 60 characters.");
+        if (post.getTitle().length() < 4 || post.getTitle().length() > 120) {
+            result.rejectValue("title", "Size.post.title", "Title must be between 4 and 120 characters.");
         }
         if (submissionPostRepository.findByTitle(post.getTitle()) != null) {
             result.rejectValue("title", "Duplicate.post.title", "An AMA with this title already exists.");

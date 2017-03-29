@@ -23,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.springframework.test.web.*;
 
@@ -53,7 +54,7 @@ public class CommentVoteTests {
     }
 
     @Test
-    public void testUpvote() throws Exception {
+    public void testUpvoteComment() throws Exception {
         CommentPost post = new CommentPost();
         post.setText("hello");
         postRepository.save(post);
@@ -62,7 +63,7 @@ public class CommentVoteTests {
     }
 
     @Test
-    public void testDownvote() throws Exception {
+    public void testDownvoteComment() throws Exception {
         CommentPost post = new CommentPost();
         post.setText("hello");
         postRepository.save(post);

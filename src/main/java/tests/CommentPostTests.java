@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.transaction.Transactional;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -23,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by sarrankanpathmanatha on 3/22/2017.
  */
 
+@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 @WebAppConfiguration
@@ -49,7 +52,7 @@ public class CommentPostTests {
     }
 
     @Test
-    public void testBaseCommentPost() throws Exception {
+    public void testAddCommentToSubmission() throws Exception {
         SubmissionPost post = new SubmissionPost();
         post.setTitle("This is my AMA.");
         post.setText("Test text.");
@@ -58,6 +61,8 @@ public class CommentPostTests {
         CommentPost comment = new CommentPost();
         comment.setText("This is a test comment.");
         comment.setContext(post);
-        mvc.perform(post("/posts/" + post.getTitle(), comment).with(user("user"))).andExpect(status().isOk());
+        mvc.perform(post("/posts/" + post.getTitle())
+                .param("text", "This is a test comment.")
+                .with(user("user"))).andExpect(status().isOk());
     }
 }
