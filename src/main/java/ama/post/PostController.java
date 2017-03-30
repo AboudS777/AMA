@@ -118,14 +118,12 @@ public class PostController {
         User user = userRepository.findByUsername(username);
         if (user != null && context != null && reply != null && reply != "") {
             CommentPost replyPost = new CommentPost(user, context, reply);
-
             commentPostRepository.save(replyPost);
         }
-        String referer = request.getHeader("Referer");
-        return "redirect:" + referer;
+        return "redirect:" + request.getHeader("Referer");
     }
 
-    public List<CommentPost> getBaseComments(Post context) {
+    private List<CommentPost> getBaseComments(Post context) {
         List<CommentPost> comments = commentPostRepository.findByContext(context);
         comments.sort(new CommentPostComparator());
         return comments;

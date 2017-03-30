@@ -16,18 +16,15 @@ import java.util.Set;
 public class CommentPost extends Post {
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    private Set<User> upvoters;
+    private Set<User> upvoters = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
-    private Set<User> downvoters;
+    private Set<User> downvoters = new HashSet<>();
 
     @ManyToOne
     private Post context;
 
-    public CommentPost() {
-        this.upvoters = new HashSet<>();
-        this.downvoters = new HashSet<>();
-    }
+    public CommentPost() {}
 
     public CommentPost(User op, Post context, String text) {
         super(op, text);

@@ -3,7 +3,6 @@ package ama.post;
 import ama.account.User;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
