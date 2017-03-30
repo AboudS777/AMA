@@ -25,6 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
@@ -91,7 +92,7 @@ public class CommentVoteTests {
                         .param("id", commentPostRepository.findAll().get(0).getId().toString())
                         .with(csrf())
                         .with(user("sarran")))
-                .andExpect(view().name("redirect:null"));
+                .andExpect(status().isFound());
     }
 
     @Test
