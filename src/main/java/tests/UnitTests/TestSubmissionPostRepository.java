@@ -25,6 +25,8 @@ public class TestSubmissionPostRepository {
     @Before
     public void setUp() throws Exception {
         submissionPost = new SubmissionPost();
+        submissionPost.setTitle("Title");
+        submissionPost.setText("Description");
     }
 
     @After
@@ -39,8 +41,6 @@ public class TestSubmissionPostRepository {
 
     @Test
     public void testFindPostByTitle() throws Exception{
-        submissionPost.setTitle("Title");
-        submissionPost.setText("Description");
         submissionPostRepository.save(submissionPost);
         SubmissionPost foundPost = submissionPostRepository.findByTitle(submissionPost.getTitle());
         assertEquals(foundPost.getTitle(),submissionPost.getTitle());

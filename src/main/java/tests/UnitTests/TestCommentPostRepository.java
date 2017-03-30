@@ -31,8 +31,12 @@ public class TestCommentPostRepository {
 
     @Before
     public void setUp() throws Exception {
-        commentPost = new CommentPost();
         submissionPost = new SubmissionPost();
+        submissionPost.setTitle("title");
+        submissionPost.setText("Description");
+        commentPost = new CommentPost();
+        commentPost.setText("Comment");
+
     }
 
     @After
@@ -49,10 +53,7 @@ public class TestCommentPostRepository {
 
     @Test
     public void testFindPostByTitle() throws Exception{
-        submissionPost.setTitle("title");
-        submissionPost.setText("Description");
         submissionPostRepository.save(submissionPost);
-        commentPost.setText("Comment");
         commentPost.setContext(submissionPost);
         commentPostRepository.save(commentPost);
         List<CommentPost> foundComments = commentPostRepository.findByContext(submissionPost);
