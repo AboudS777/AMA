@@ -14,6 +14,8 @@ public class TestUser {
     @Before
     public void setUp() throws Exception {
         sarran  = new User();
+        sarran.setUsername("sarrankan");
+        sarran.setPassword("themans");
     }
 
     @After
@@ -28,13 +30,11 @@ public class TestUser {
 
     @Test
     public void testUsername() throws Exception {
-        sarran.setUsername("sarrankan");
         assertEquals(sarran.getUsername(),"sarrankan");
     }
 
     @Test
     public void testPassword() throws Exception {
-        sarran.setPassword("themans");
         assertEquals(sarran.getPassword(),"themans");
     }
 
