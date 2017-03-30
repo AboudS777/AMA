@@ -1,14 +1,9 @@
 package tests.UnitTests;
 
 import ama.account.User;
-import org.aspectj.apache.bcel.ExceptionConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.test.context.TestPropertySource;
-
-import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -74,7 +69,5 @@ public class TestUser {
     public void testGetAuthorities() throws Exception {
         assertNull(sarran.getAuthorities());
     }
-
-
 
 }
