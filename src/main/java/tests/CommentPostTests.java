@@ -122,8 +122,8 @@ public class CommentPostTests {
 
     @Test
     public void testReplyToInvalidComment() throws Exception {
-
         String replyText = "This is a reply to an invalid comment.";
+        int numberOfComments = commentPostRepository.findAll().size();
         mvc
                 .perform(post("/comments/10/reply")
                         .with(csrf())
@@ -131,6 +131,6 @@ public class CommentPostTests {
                         .param("reply", replyText))
                 .andExpect(status().is3xxRedirection());
 
-        assert(commentPostRepository.findByText(replyText).size() == 0);
+        assert(commentPostRepository.findAll().size() == numberOfComments);
     }
 }
