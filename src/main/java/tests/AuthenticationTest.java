@@ -3,9 +3,12 @@ package tests;
 import ama.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import ama.account.User;
 import ama.account.UserService;
@@ -41,12 +44,32 @@ public class AuthenticationTest {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+        User user = new User("sarran", "theman");
+        userService.registerNewUserAccount(user);
+    }
+
+    @Test
+    public void testRegisterValidUser() throws Exception {
+        mvc
+                .perform(post("/registration")
+                        .with(csrf())
+                        .param("username", "newUser")
+                        .param("password", "pass"))
+                .andExpect(view().name("registered"));
+    }
+
+    @Test
+    public void testRegisterInvalidUser() throws Exception {
+        mvc
+                .perform(post("/registration")
+                        .with(csrf())
+                        .param("username", "u")
+                        .param("password", "pass"))
+                .andExpect(view().name("registration"));
     }
 
     @Test
     public void testLoginValidUser() throws Exception {
-        User user = new User("sarran", "theman");
-        userService.registerNewUserAccount(user);
         mvc
                 .perform(formLogin().user("sarran").password("theman"))
                 .andExpect(authenticated());

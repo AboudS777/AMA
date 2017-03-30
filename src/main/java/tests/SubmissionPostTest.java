@@ -33,9 +33,6 @@ public class SubmissionPostTest {
     private WebApplicationContext context;
 
     @Autowired
-    private SubmissionPostRepository submissionPostRepository;
-
-    @Autowired
     private UserService userService;
 
     private MockMvc mvc;
@@ -50,41 +47,43 @@ public class SubmissionPostTest {
         userService.registerNewUserAccount(new User("user", "theman"));
     }
 
-
     @Test
     public void testPostAMASubmission() throws Exception {
-        mvc.perform(post("/create_submission")
-                .param("title", "AMA Title")
-                .param("text", "AMA Text")
-                .with(csrf())
-                .with(user("user")))
+        mvc
+                .perform(post("/create_submission")
+                        .param("title", "AMA Title")
+                        .param("text", "AMA Text")
+                        .with(csrf())
+                        .with(user("user")))
                 .andExpect(view().name("redirect:/"));
-
     }
 
     @Test
     public void testGetSubmissionView() throws Exception {
-        mvc.perform(get("/posts/AMA Title")
-                .with(csrf())
-                .with(user("user")))
+        mvc
+                .perform(get("/posts/AMA Title")
+                        .with(csrf())
+                        .with(user("user")))
                 .andExpect(view().name("ama"));
     }
 
     @Test
     public void testPostInvalidAMASubmission() throws Exception {
-        mvc.perform(post("/create_submission")
-                .param("title", "V")
-                .param("text", "title is too short.")
-                .with(csrf())
-                .with(user("user")))
+        mvc
+                .perform(post("/create_submission")
+                        .param("title", "V")
+                        .param("text", "title is too short.")
+                        .with(csrf())
+                        .with(user("user")))
                 .andExpect(view().name("createsubmission"));
     }
 
     @Test
     public void testGetNonExistentSubmissionView() throws Exception{
-        mvc.perform(get("/posts/DoesntExist")
-                .with(csrf())
-                .with(user("user")))
+        mvc
+                .perform(get("/posts/DoesntExist")
+                        .with(csrf())
+                        .with(user("user")))
                 .andExpect(view().name("pageNotFound"));
     }
 

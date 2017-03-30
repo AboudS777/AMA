@@ -39,13 +39,13 @@ public class CommentPostTests {
     private WebApplicationContext context;
 
     @Autowired
-    SubmissionPostRepository submissionPostRepository;
+    private SubmissionPostRepository submissionPostRepository;
 
     @Autowired
-    CommentPostRepository commentPostRepository;
+    private CommentPostRepository commentPostRepository;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     private MockMvc mvc;
 

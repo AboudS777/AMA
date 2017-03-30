@@ -1,6 +1,8 @@
 package tests;
 
 import ama.Application;
+import ama.account.User;
+import ama.account.UserService;
 import ama.post.CommentPost;
 import ama.post.CommentPostRepository;
 import org.junit.Before;
@@ -20,7 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * Created by stephanernst on 3/22/2017.
@@ -36,7 +38,10 @@ public class CommentVoteTests {
     private WebApplicationContext context;
 
     @Autowired
-    CommentPostRepository postRepository;
+    private CommentPostRepository commentPostRepository;
+
+    @Autowired
+    private UserService userService;
 
     private MockMvc mvc;
 
@@ -46,31 +51,50 @@ public class CommentVoteTests {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+
+        userService.registerNewUserAccount(new User("sarran", "theman"));
+        CommentPost comment = new CommentPost();
+        comment.setText("some comment.");
+        commentPostRepository.save(comment);
     }
 
     @Test
-    public void testUpvoteComment() throws Exception {
-        CommentPost post = new CommentPost();
-        post.setText("hello");
-        postRepository.save(post);
-        post = postRepository.findAll().get(0);
-        mvc.perform(get("/comments/upvote")
-                .param("id", post.getId().toString())
-                .with(csrf())
-                .with(user("user")))
-                .andExpect(status().isOk());
+    public void testUpvoteValidComment() throws Exception {
+        mvc
+                .perform(get("/comments/upvote")
+                        .param("id", commentPostRepository.findAll().get(0).getId().toString())
+                        .with(csrf())
+                        .with(user("sarran")))
+                .andExpect(view().name("redirect:null"));
     }
 
     @Test
-    public void testDownvoteComment() throws Exception {
-        CommentPost post = new CommentPost();
-        post.setText("hello");
-        postRepository.save(post);
-        post = postRepository.findAll().get(0);
-        mvc.perform(get("/comments/downvote")
-                .param("id", post.getId().toString())
-                .with(csrf())
-                .with(user("user")))
-                .andExpect(status().isOk());
+    public void testUpvoteInvalidComment() throws Exception {
+        mvc
+                .perform(get("/comments/upvote")
+                        .param("id", "10")
+                        .with(csrf())
+                        .with(user("sarran")))
+                .andExpect(view().name("pageNotFound"));
+    }
+
+    @Test
+    public void testDownvoteValidComment() throws Exception {
+        mvc
+                .perform(get("/comments/downvote")
+                        .param("id", commentPostRepository.findAll().get(0).getId().toString())
+                        .with(csrf())
+                        .with(user("sarran")))
+                .andExpect(view().name("redirect:null"));
+    }
+
+    @Test
+    public void testDownvoteInvalidComment() throws Exception {
+        mvc
+                .perform(get("/comments/downvote")
+                        .param("id", "10")
+                        .with(csrf())
+                        .with(user("sarran")))
+                .andExpect(view().name("pageNotFound"));
     }
 }
