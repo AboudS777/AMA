@@ -55,8 +55,10 @@ public class CommentPostTests {
                 .webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-
-        userService.registerNewUserAccount(new User("user", "pass"));
+        User user = new User("sarran", "theman");
+        if(userService.loadUserByUsername(user.getUsername()) == null) {
+            userService.registerNewUserAccount(user);
+        }
     }
 
     @Test
@@ -68,7 +70,7 @@ public class CommentPostTests {
         mvc
                 .perform(post("/posts/" + post.getTitle())
                         .with(csrf())
-                        .with(user("user"))
+                        .with(user("sarran"))
                         .param("text", "This is a test comment"))
                 .andExpect(view().name("redirect:/posts/{submission}"));
     }
@@ -78,7 +80,7 @@ public class CommentPostTests {
         mvc
                 .perform(post("/posts/invalid")
                         .with(csrf())
-                        .with(user("user"))
+                        .with(user("sarran"))
                         .param("text", "This is a test comment"))
                 .andExpect(view().name("pageNotFound"));
     }
@@ -92,7 +94,7 @@ public class CommentPostTests {
         mvc
                 .perform(post("/posts/" + post.getTitle())
                         .with(csrf())
-                        .with(user("user"))
+                        .with(user("sarran"))
                         .param("text", ""))
                 .andExpect(view().name("pageNotFound"));
     }
@@ -105,7 +107,7 @@ public class CommentPostTests {
         mvc
                 .perform(post("/comments/" + comment.getId().toString() + "/reply")
                         .with(csrf())
-                        .with(user("user"))
+                        .with(user("sarran"))
                         .param("reply", "this is a reply"))
                 .andExpect(view().name("redirect:null"));
     }
@@ -115,7 +117,7 @@ public class CommentPostTests {
         mvc
                 .perform(post("/comments/2/reply")
                         .with(csrf())
-                        .with(user("user"))
+                        .with(user("sarran"))
                         .param("reply", "this is a reply"))
                 .andExpect(view().name("pageNotFound"));
     }

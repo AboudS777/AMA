@@ -2,6 +2,7 @@ package tests;
 
 import ama.Application;
 import ama.account.User;
+import ama.account.UserRepository;
 import ama.account.UserService;
 import ama.post.CommentPost;
 import ama.post.CommentPostRepository;
@@ -18,6 +19,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
+import org.springframework.validation.BindException;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -52,7 +55,10 @@ public class CommentVoteTests {
                 .apply(springSecurity())
                 .build();
 
-        userService.registerNewUserAccount(new User("sarran", "theman"));
+        User user = new User("sarran", "theman");
+        if(userService.loadUserByUsername(user.getUsername()) == null) {
+            userService.registerNewUserAccount(user);
+        }
         CommentPost comment = new CommentPost();
         comment.setText("some comment.");
         commentPostRepository.save(comment);

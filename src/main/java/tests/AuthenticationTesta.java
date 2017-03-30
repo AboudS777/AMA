@@ -1,16 +1,17 @@
 package tests;
 
 import ama.*;
-
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import ama.account.User;
 import ama.account.UserService;
-import ama.post.SubmissionPostRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,13 +23,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 @WebAppConfiguration
 @SpringBootTest(classes = Application.class)
-public class SubmissionPostTest {
+public class AuthenticationTesta {
+
     @Autowired
     private WebApplicationContext context;
 
@@ -44,47 +45,49 @@ public class SubmissionPostTest {
                 .apply(springSecurity())
                 .build();
 
-        userService.registerNewUserAccount(new User("user", "theman"));
+        User user = new User("sarran", "theman");
+        if(userService.loadUserByUsername(user.getUsername()) == null) {
+            userService.registerNewUserAccount(user);
+        }
     }
 
     @Test
-    public void testPostAMASubmission() throws Exception {
+    public void testRegisterValidUser() throws Exception {
         mvc
-                .perform(post("/create_submission")
-                        .param("title", "AMA Title")
-                        .param("text", "AMA Text")
+                .perform(post("/registration")
                         .with(csrf())
-                        .with(user("user")))
-                .andExpect(view().name("redirect:/"));
+                        .param("username", "newUser")
+                        .param("password", "pass"))
+                .andExpect(view().name("registered"));
     }
 
     @Test
-    public void testGetSubmissionView() throws Exception {
+    public void testRegisterInvalidUser() throws Exception {
         mvc
-                .perform(get("/posts/AMA Title")
+                .perform(post("/registration")
                         .with(csrf())
-                        .with(user("user")))
-                .andExpect(view().name("ama"));
+                        .param("username", "u")
+                        .param("password", "pass"))
+                .andExpect(view().name("registration"));
     }
 
     @Test
-    public void testPostInvalidAMASubmission() throws Exception {
+    public void testLoginValidUser() throws Exception {
         mvc
-                .perform(post("/create_submission")
-                        .param("title", "V")
-                        .param("text", "title is too short.")
-                        .with(csrf())
-                        .with(user("user")))
-                .andExpect(view().name("createsubmission"));
+                .perform(formLogin().user("sarran").password("theman"))
+                .andExpect(authenticated());
     }
 
     @Test
-    public void testGetNonExistentSubmissionView() throws Exception{
+    public void testLoginInvalidUser() throws Exception {
         mvc
-                .perform(get("/posts/DoesntExist")
-                        .with(csrf())
-                        .with(user("user")))
-                .andExpect(view().name("pageNotFound"));
+                .perform(formLogin().password("invalid"))
+                .andExpect(unauthenticated());
     }
 
+    @Test
+    public void testLogout() throws Exception {
+        mvc
+                .perform(logout()).andExpect(unauthenticated());
+    }
 }

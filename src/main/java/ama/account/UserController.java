@@ -35,7 +35,6 @@ public class UserController {
     @PostMapping("/registration")
     public String registerUserAccount(@ModelAttribute("user") @Valid User user, BindingResult result) {
         validator.validate(user, result);
-
         if (result.hasErrors()) {
             return "registration";
         }
