@@ -3,12 +3,11 @@ package tests;
 import ama.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ama.account.User;
 import ama.account.UserService;
@@ -52,42 +51,29 @@ public class AuthenticationTests {
     }
 
     @Test
-    public void testRegisterValidUser() throws Exception {
-        mvc
-                .perform(post("/registration")
-                        .with(csrf())
-                        .param("username", "newUser")
-                        .param("password", "pass"))
-                .andExpect(view().name("registered"));
-    }
-
-    @Test
-    public void testRegisterInvalidUser() throws Exception {
-        mvc
-                .perform(post("/registration")
-                        .with(csrf())
-                        .param("username", "u")
-                        .param("password", "pass"))
-                .andExpect(view().name("registration"));
-    }
-
-    @Test
     public void testLoginValidUser() throws Exception {
         mvc
                 .perform(formLogin().user("sarran").password("theman"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
                 .andExpect(authenticated());
     }
 
     @Test
     public void testLoginInvalidUser() throws Exception {
         mvc
-                .perform(formLogin().password("invalid"))
+                .perform(formLogin().user("invalidUser").password("invalid"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"))
                 .andExpect(unauthenticated());
     }
 
     @Test
     public void testLogout() throws Exception {
         mvc
-                .perform(logout()).andExpect(unauthenticated());
+                .perform(logout())
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(unauthenticated());
     }
 }

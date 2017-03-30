@@ -2,7 +2,6 @@ package tests;
 
 import ama.Application;
 import ama.account.User;
-import ama.account.UserRepository;
 import ama.account.UserService;
 import ama.post.CommentPost;
 import ama.post.CommentPostRepository;
@@ -20,7 +19,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
-import org.springframework.validation.BindException;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -72,6 +70,7 @@ public class CommentVoteTests {
                         .param("id", commentPostRepository.findAll().get(0).getId().toString())
                         .with(csrf())
                         .with(user("sarran")))
+                .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:null"));
     }
 
@@ -82,6 +81,7 @@ public class CommentVoteTests {
                         .param("id", "10")
                         .with(csrf())
                         .with(user("sarran")))
+                .andExpect(status().isOk())
                 .andExpect(view().name("pageNotFound"));
     }
 
@@ -92,7 +92,7 @@ public class CommentVoteTests {
                         .param("id", commentPostRepository.findAll().get(0).getId().toString())
                         .with(csrf())
                         .with(user("sarran")))
-                .andExpect(status().isFound());
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -102,6 +102,7 @@ public class CommentVoteTests {
                         .param("id", "10")
                         .with(csrf())
                         .with(user("sarran")))
+                .andExpect(status().isOk())
                 .andExpect(view().name("pageNotFound"));
     }
 }

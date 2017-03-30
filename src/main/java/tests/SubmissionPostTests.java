@@ -6,8 +6,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
 import ama.account.User;
 import ama.account.UserService;
 import org.junit.Before;
@@ -22,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -57,7 +56,8 @@ public class SubmissionPostTests {
                         .param("text", "AMA Text")
                         .with(csrf())
                         .with(user("sarran")))
-                .andExpect(view().name("redirect:/"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
     }
 
     @Test
@@ -66,6 +66,7 @@ public class SubmissionPostTests {
                 .perform(get("/posts/AMA Title")
                         .with(csrf())
                         .with(user("sarran")))
+                .andExpect(status().isOk())
                 .andExpect(view().name("ama"));
     }
 
@@ -77,6 +78,8 @@ public class SubmissionPostTests {
                         .param("text", "title is too short.")
                         .with(csrf())
                         .with(user("sarran")))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeHasFieldErrors("submissionPost", "title"))
                 .andExpect(view().name("createsubmission"));
     }
 
@@ -86,6 +89,7 @@ public class SubmissionPostTests {
                 .perform(get("/posts/DoesntExist")
                         .with(csrf())
                         .with(user("sarran")))
+                .andExpect(status().isOk())
                 .andExpect(view().name("pageNotFound"));
     }
 

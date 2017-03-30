@@ -22,7 +22,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Created by sarrankanpathmanatha on 3/22/2017.
@@ -72,7 +73,8 @@ public class CommentPostTests {
                         .with(csrf())
                         .with(user("sarran"))
                         .param("text", "This is a test comment"))
-                .andExpect(view().name("redirect:/posts/{submission}"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/posts/This%20is%20my%20AMA"));
     }
 
     @Test
@@ -82,6 +84,7 @@ public class CommentPostTests {
                         .with(csrf())
                         .with(user("sarran"))
                         .param("text", "This is a test comment"))
+                .andExpect(status().isOk())
                 .andExpect(view().name("pageNotFound"));
     }
 
@@ -96,6 +99,8 @@ public class CommentPostTests {
                         .with(csrf())
                         .with(user("sarran"))
                         .param("text", ""))
+                .andExpect(status().isOk())
+                .andDo(print())
                 .andExpect(view().name("pageNotFound"));
     }
 
@@ -109,7 +114,8 @@ public class CommentPostTests {
                         .with(csrf())
                         .with(user("sarran"))
                         .param("reply", "this is a reply"))
-                .andExpect(view().name("redirect:null"));
+                .andDo(print())
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -119,6 +125,7 @@ public class CommentPostTests {
                         .with(csrf())
                         .with(user("sarran"))
                         .param("reply", "this is a reply"))
+                .andExpect(status().isOk())
                 .andExpect(view().name("pageNotFound"));
     }
 }
