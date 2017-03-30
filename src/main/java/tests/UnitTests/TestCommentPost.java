@@ -59,14 +59,19 @@ public class TestCommentPost {
     }
 
     @Test
-    public void testDownvoteUpvote() throws Exception{
+    public void testDownvote() throws Exception{
         commentPost.downvote(sarran);
         assertEquals(commentPost.getDownvotes(),1);
-        commentPost.upvote(sarran);
-        assertEquals(commentPost.getDownvotes(),0);
-        assertEquals(commentPost.getUpvotes(),1);
+
     }
 
+    @Test
+    public void testUpvoteThenDownVote() throws Exception {
+        commentPost.upvote(sarran);
+        commentPost.downvote(sarran);
+        assertEquals(commentPost.getUpvotes(),0);
+        assertEquals(commentPost.getDownvotes(), 1);
+    }
     @Test
     public void testgetPoints() throws Exception{
         commentPost.upvote(sarran);
