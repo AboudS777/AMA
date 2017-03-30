@@ -52,7 +52,7 @@ public class TestCommentPostRepository {
     }
 
     @Test
-    public void testFindPostByTitle() throws Exception{
+    public void testFindPostByContext() throws Exception{
         submissionPostRepository.save(submissionPost);
         commentPost.setContext(submissionPost);
         commentPostRepository.save(commentPost);

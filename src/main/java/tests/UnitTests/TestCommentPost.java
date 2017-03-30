@@ -42,7 +42,7 @@ public class TestCommentPost {
 
     @Test
     public void testCommentOnPost() throws Exception {
-        assertEquals(commentPost.getUser(),kan);
+        assertEquals(commentPost.getOp(),kan);
     }
 
     @Test
