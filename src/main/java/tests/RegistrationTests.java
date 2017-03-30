@@ -62,44 +62,55 @@ public class RegistrationTests {
                 .andExpect(status().isOk())
                 .andExpect(model().hasNoErrors())
                 .andExpect(view().name("registered"));
+
+        assert(userService.loadUserByUsername("newUser") != null);
     }
 
     @Test
     public void testRegisterTooShortUsernameAndPassword() throws Exception {
+        String usernameTooShort = "u";
         mvc
                 .perform(post("/registration")
                         .with(csrf())
-                        .param("username", "u")
+                        .param("username", usernameTooShort)
                         .param("password", "p"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors("user", "username"))
                 .andExpect(model().attributeHasFieldErrors("user", "password"))
                 .andExpect(view().name("registration"));
+
+        assert(userService.loadUserByUsername(usernameTooShort) == null);
     }
 
     @Test
     public void testRegisterTooLongUsernameAndPassword() throws Exception {
+        String usernameTooLong = "ushetfdbdatdftheanghh";
         mvc
                 .perform(post("/registration")
                         .with(csrf())
-                        .param("username", "ushetfdbdatdftheanghh")
+                        .param("username", usernameTooLong)
                         .param("password", "phgtyhgfdsadethedafet"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors("user", "username"))
                 .andExpect(model().attributeHasFieldErrors("user", "password"))
                 .andExpect(view().name("registration"));
+
+        assert(userService.loadUserByUsername(usernameTooLong) == null);
     }
 
     @Test
     public void testRegisterSpecialCharsInUsername() throws Exception {
+        String usernameSpecialChars = "@$sh&";
         mvc
                 .perform(post("/registration")
                         .with(csrf())
-                        .param("username", "@$sh&")
+                        .param("username", usernameSpecialChars)
                         .param("password", "pass"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors("user", "username"))
                 .andExpect(view().name("registration"));
+
+        assert(userService.loadUserByUsername(usernameSpecialChars) == null);
     }
 
     @Test

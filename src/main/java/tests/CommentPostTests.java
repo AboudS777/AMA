@@ -16,20 +16,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.transaction.Transactional;
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Created by sarrankanpathmanatha on 3/22/2017.
  */
 
-@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 @WebAppConfiguration
@@ -65,25 +61,29 @@ public class CommentPostTests {
     @Test
     public void testAddCommentToValidSubmission() throws Exception {
         SubmissionPost post = new SubmissionPost();
-        post.setTitle("This is my AMA");
+        post.setTitle("Valid AMA Submission");
         post.setText("Test text.");
-        submissionPostRepository.save(post);
+        post = submissionPostRepository.save(post);
+
+        String commentText = "test comment on valid submission";
         mvc
                 .perform(post("/posts/" + post.getTitle())
                         .with(csrf())
                         .with(user("sarran"))
-                        .param("text", "This is a test comment"))
+                        .param("text", commentText))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/posts/This%20is%20my%20AMA"));
+                .andExpect(redirectedUrl("/posts/Valid%20AMA%20Submission"));
+        assert(commentPostRepository.findByContext(post).get(0).getText().equals(commentText));
     }
 
     @Test
     public void testAddCommentToInvalidSubmission() throws Exception {
+        String commentText = "test comment on invalid submission";
         mvc
                 .perform(post("/posts/invalid")
                         .with(csrf())
                         .with(user("sarran"))
-                        .param("text", "This is a test comment"))
+                        .param("text", commentText))
                 .andExpect(status().isOk())
                 .andExpect(view().name("pageNotFound"));
     }
@@ -91,17 +91,17 @@ public class CommentPostTests {
     @Test
     public void testAddInvalidCommentToValidSubmission() throws Exception {
         SubmissionPost post = new SubmissionPost();
-        post.setTitle("This is my AMA");
+        post.setTitle("Add invalid comment to this submission");
         post.setText("Test text.");
-        submissionPostRepository.save(post);
+        post = submissionPostRepository.save(post);
         mvc
                 .perform(post("/posts/" + post.getTitle())
                         .with(csrf())
                         .with(user("sarran"))
                         .param("text", ""))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andExpect(view().name("pageNotFound"));
+        assert(commentPostRepository.findByContext(post).size() == 0);
     }
 
     @Test
@@ -109,23 +109,28 @@ public class CommentPostTests {
         CommentPost comment = new CommentPost();
         comment.setText("this is a base comment.");
         comment = commentPostRepository.save(comment);
+
+        String replyText = "This is a reply.";
         mvc
                 .perform(post("/comments/" + comment.getId().toString() + "/reply")
                         .with(csrf())
                         .with(user("sarran"))
-                        .param("reply", "this is a reply"))
-                .andDo(print())
+                        .param("reply", replyText))
                 .andExpect(status().is3xxRedirection());
+        assert(commentPostRepository.findByContext(comment).get(0).getText().equals(replyText));
     }
 
     @Test
-    public void testReplyToInValidComment() throws Exception {
+    public void testReplyToInvalidComment() throws Exception {
+
+        String replyText = "This is a reply to an invalid comment.";
         mvc
-                .perform(post("/comments/2/reply")
+                .perform(post("/comments/10/reply")
                         .with(csrf())
                         .with(user("sarran"))
-                        .param("reply", "this is a reply"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("pageNotFound"));
+                        .param("reply", replyText))
+                .andExpect(status().is3xxRedirection());
+
+        assert(commentPostRepository.findByText(replyText).size() == 0);
     }
 }

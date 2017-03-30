@@ -21,6 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.transaction.Transactional;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by stephanernst on 3/22/2017.
  */
 
+@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 @WebAppConfiguration
@@ -58,8 +61,9 @@ public class CommentVoteTests {
         if(userService.loadUserByUsername(user.getUsername()) == null) {
             userService.registerNewUserAccount(user);
         }
+
         CommentPost comment = new CommentPost();
-        comment.setText("some comment.");
+        comment.setText("This is a comment.");
         commentPostRepository.save(comment);
     }
 
@@ -72,6 +76,8 @@ public class CommentVoteTests {
                         .with(user("sarran")))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:null"));
+
+        assert(commentPostRepository.findAll().get(0).getPoints() == 1);
     }
 
     @Test
@@ -93,6 +99,8 @@ public class CommentVoteTests {
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().is3xxRedirection());
+
+        assert(commentPostRepository.findAll().get(0).getPoints() == -1);
     }
 
     @Test

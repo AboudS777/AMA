@@ -12,4 +12,5 @@ import java.util.List;
 public interface CommentPostRepository extends PostRepository<CommentPost> {
 
     List<CommentPost> findByContext(Post context);
+    List<CommentPost> findByText(String text);
 }

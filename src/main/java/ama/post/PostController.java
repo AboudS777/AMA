@@ -44,7 +44,7 @@ public class PostController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
         User user = userRepository.findByUsername(username);
-        if(result.hasErrors()||user == null || post == null) {
+        if(result.hasErrors()||user == null) {
             return "createsubmission";
         } else {
             post.setOp(user);
@@ -119,9 +119,8 @@ public class PostController {
         if (user != null && context != null && reply != null && reply != "") {
             CommentPost replyPost = new CommentPost(user, context, reply);
             commentPostRepository.save(replyPost);
-            return "redirect:" + request.getHeader("Referer");
         }
-        return "pageNotFound";
+        return "redirect:" + request.getHeader("Referer");
     }
 
     private List<CommentPost> getBaseComments(Post context) {

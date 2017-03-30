@@ -8,6 +8,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import ama.account.User;
 import ama.account.UserService;
+import ama.post.SubmissionPostRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,9 @@ public class SubmissionPostTests {
     private WebApplicationContext context;
 
     @Autowired
+    private SubmissionPostRepository submissionPostRepository;
+
+    @Autowired
     private UserService userService;
 
     private MockMvc mvc;
@@ -50,14 +54,17 @@ public class SubmissionPostTests {
 
     @Test
     public void testPostAMASubmission() throws Exception {
+        String amaTitle = "AMA Title";
         mvc
                 .perform(post("/create_submission")
-                        .param("title", "AMA Title")
+                        .param("title", amaTitle)
                         .param("text", "AMA Text")
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+
+        assert(submissionPostRepository.findByTitle(amaTitle) != null);
     }
 
     @Test
@@ -72,15 +79,18 @@ public class SubmissionPostTests {
 
     @Test
     public void testPostInvalidAMASubmission() throws Exception {
+        String amaTitleTooShort = "V";
         mvc
                 .perform(post("/create_submission")
-                        .param("title", "V")
+                        .param("title", amaTitleTooShort)
                         .param("text", "title is too short.")
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeHasFieldErrors("submissionPost", "title"))
                 .andExpect(view().name("createsubmission"));
+
+        assert(submissionPostRepository.findByTitle(amaTitleTooShort) == null);
     }
 
     @Test
