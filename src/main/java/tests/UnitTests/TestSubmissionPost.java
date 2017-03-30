@@ -41,7 +41,7 @@ public class TestSubmissionPost {
     }
 
     @Test
-    public void testUserLikedPost() throws Exception{
+    public void testAnotherUserLikedPost() throws Exception{
         User kan = new User("kan", "theman");
         submissionPost.likePost(kan);
         assertEquals(submissionPost.getUsersWhoLiked(),2);

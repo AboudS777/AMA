@@ -1,9 +1,14 @@
 package tests.UnitTests;
 
 import ama.account.User;
+import org.aspectj.apache.bcel.ExceptionConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.test.context.TestPropertySource;
+
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -37,5 +42,39 @@ public class TestUser {
         sarran.setPassword("themans");
         assertEquals(sarran.getPassword(),"themans");
     }
+
+    @Test
+    public void testId() throws Exception{
+        Long id = new Long(1);
+        sarran.setId(id);
+        assertEquals(sarran.getId(),id);
+    }
+
+    @Test
+    public void testIsAccountNonExpired() throws Exception{
+        assertTrue(sarran.isAccountNonExpired());
+    }
+
+    @Test
+    public void testIsAccountNonLocked() throws Exception{
+        assertTrue(sarran.isAccountNonLocked());
+    }
+
+    @Test
+    public void testIsCredentialsNonExpired() throws Exception{
+        assertTrue(sarran.isCredentialsNonExpired());
+    }
+
+    @Test
+    public void testIsEnabled() throws Exception {
+        assertTrue(sarran.isEnabled());
+    }
+
+    @Test
+    public void testGetAuthorities() throws Exception {
+        assertNull(sarran.getAuthorities());
+    }
+
+
 
 }
