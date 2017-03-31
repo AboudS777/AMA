@@ -1,12 +1,9 @@
 package ama.post;
 
 import ama.account.User;
-import ama.account.UserRepository;
 import ama.authentication.Authenticator;
 import ama.validation.Validator;
-import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -73,13 +71,13 @@ public class PostController {
     public String addCommentToSubmission(@PathVariable(value = "submission") String submission,@ModelAttribute("commentPost") CommentPost commentPost) {
         SubmissionPost post = submissionPostRepository.findByTitle(submission);
         User user = authenticator.getCurrentUser();
-        if (post != null && commentPost != null && !commentPost.getText().equals("")){
+        Date now = new Date();
+        if (post != null && commentPost != null && !commentPost.getText().equals("") && now.before(post.getVotingCloses())){
             commentPost.setContext(post);
             commentPost.setOp(user);
             commentPostRepository.save(commentPost);
-            return "redirect:/posts/{submission}";
         }
-        return "pageNotFound";
+        return "redirect:/posts/{submission}";
     }
 
     @GetMapping("/posts/like")
@@ -99,37 +97,48 @@ public class PostController {
     public String upvoteComment(HttpServletRequest request, @RequestParam("id") String commentId) {
         CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId));
         User user = authenticator.getCurrentUser();
-        if (user != null && comment != null) {
-            comment.upvote(user);
-            commentPostRepository.save(comment);
-            String referer = request.getHeader("Referer");
-            return "redirect:" + referer;
+        if (comment != null) {
+            SubmissionPost post = (SubmissionPost) comment.getContext();
+            Date now = new Date();
+            if (user != null && now.before(post.getVotingCloses())) {
+                comment.upvote(user);
+                commentPostRepository.save(comment);
+            }
         }
-        return "pageNotFound";
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
     }
 
     @GetMapping("/comments/downvote")
     public String downvoteComment(HttpServletRequest request, @RequestParam("id") String commentId) {
         CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId));
         User user = authenticator.getCurrentUser();
-        if (user != null && comment != null) {
-            comment.downvote(user);
-            commentPostRepository.save(comment);
-            String referer = request.getHeader("Referer");
-            return "redirect:" + referer;
+        if (comment != null) {
+            SubmissionPost post = (SubmissionPost)comment.getContext();
+            Date now = new Date();
+            if (user != null && now.before(post.getVotingCloses())) {
+                comment.downvote(user);
+                commentPostRepository.save(comment);
+            }
         }
-        return "pageNotFound";
+        String referer = request.getHeader("Referer");
+        return "redirect:" + referer;
     }
 
     @PostMapping("/comments/{id}/reply")
     public String replyToComment(HttpServletRequest request, @PathVariable(value="id") String id, String reply) {
         CommentPost context = commentPostRepository.findById(Long.parseLong(id));
         User user = authenticator.getCurrentUser();
-        if (user != null && context != null && reply != null && reply != "") {
-            CommentPost replyPost = new CommentPost(user, context, reply);
-            commentPostRepository.save(replyPost);
+        if (context != null) {
+            SubmissionPost post = (SubmissionPost)context.getContext();
+            Date now = new Date();
+            if (user != null && reply != null && reply != "" && now.before(post.getAnswerCloses())) {
+                CommentPost replyPost = new CommentPost(user, context, reply);
+                commentPostRepository.save(replyPost);
+            }
+            return "redirect:" + request.getHeader("Referer");
         }
-        return "redirect:" + request.getHeader("Referer");
+        return "pageNotFound";
     }
 
     private List<CommentPost> getBaseComments(Post context) {

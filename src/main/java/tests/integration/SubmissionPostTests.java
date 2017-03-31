@@ -2,7 +2,6 @@ package tests.integration;
 
 import ama.*;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -25,9 +24,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.Date;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -69,6 +66,8 @@ public class SubmissionPostTests {
                         .param("title", amaTitle)
                         .param("text", "AMA Text")
                         .param("postTags", "")
+                        .param("votingCloses", "2100-01-01T03:33")
+                        .param("answerCloses", "2100-01-01T03:33")
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().is3xxRedirection())
@@ -86,6 +85,8 @@ public class SubmissionPostTests {
                         .param("title", amaTitle)
                         .param("text", "AMA Text")
                         .param("postTags","Hello,World")
+                        .param("votingCloses", "2100-01-01T03:33")
+                        .param("answerCloses", "2100-01-01T03:33")
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().is3xxRedirection())
@@ -101,6 +102,8 @@ public class SubmissionPostTests {
         SubmissionPost submission = new SubmissionPost();
         submission.setTitle("TEST SUBMISSION VIEW");
         submission.setText("test submission view text");
+        submission.setVotingCloses(new Date());
+        submission.setAnswerCloses(new Date());
         submissionPostRepository.save(submission);
         mvc
                 .perform(get("/posts/" + submission.getTitle())
