@@ -19,7 +19,11 @@ public class Authenticator {
 
     public User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        return userRepository.findByUsername(username);
+        if (auth != null) {
+            String username = auth.getName();
+            return userRepository.findByUsername(username);
+        } else {
+            return null;
+        }
     }
 }
