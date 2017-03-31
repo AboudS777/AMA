@@ -1,18 +1,33 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
     <title>Register</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet"/>
+
+    <!-- Custom styles for this template -->
+    <link href="signin.css" rel="stylesheet"/>
 </head>
 <body>
-<!--/*@thymesVar id="user" type="User"*/-->
-<h1>Registration Form</h1>
-<form action="#" th:action="@{/registration}" th:object="${user}" method="post">
-    <p>Username: <input type="text" th:field="*{username}" /></p>
-    <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
-    <p>Password: <input type="password" th:field="*{password}" /></p>
-    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-</form>
+        <div class="container">
+            <form class="form-register" action="#" th:action="@{/registration}" th:object="${user}" method="post">
+                <h1 class="cover-heading">Register a new user</h1>
+                <label for="inputUsername" class="sr-only">Username</label>
+                <input type="text" id="inputUsername" th:field="*{username}" class="form-control" placeholder="Username" required="autofocus"/>
+                <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+                <label for="inputPassword" class="sr-only">Password</label>
+                <input type="password" id="inputPassword" th:field="*{password}" class="form-control" placeholder="Password"/>
+                <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+            </form>
+        </div>
 </body>
 </html>
