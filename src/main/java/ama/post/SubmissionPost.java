@@ -25,7 +25,6 @@ public class SubmissionPost extends Post {
     public SubmissionPost(User op, String title, String text) {
         super(op, text);
         this.title = title;
-        usersWhoLiked.add(op);
     }
 
     public void setTitle(String title) {
@@ -36,7 +35,7 @@ public class SubmissionPost extends Post {
         return title;
     }
 
-    public int getUsersWhoLiked() {
+    public int getAmountOfLikes() {
         return usersWhoLiked.size();
     }
 

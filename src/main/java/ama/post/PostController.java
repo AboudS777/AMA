@@ -2,6 +2,7 @@ package ama.post;
 
 import ama.account.User;
 import ama.account.UserRepository;
+import ama.authentication.Authenticator;
 import ama.validation.Validator;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class PostController {
     private CommentPostRepository commentPostRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private Authenticator authenticator;
 
     @Autowired
     private Validator validator;
@@ -41,9 +42,7 @@ public class PostController {
     @PostMapping("/create_submission")
     public String postAMASubmission(@ModelAttribute("submissionPost") SubmissionPost post, BindingResult result){
         validator.validate(post, result);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username);
+        User user = authenticator.getCurrentUser();
         if(result.hasErrors()||user == null) {
             return "createsubmission";
         } else {
@@ -68,9 +67,7 @@ public class PostController {
     @PostMapping("/posts/{submission}")
     public String addCommentToSubmission(@PathVariable(value = "submission") String submission,@ModelAttribute("commentPost") CommentPost commentPost) {
         SubmissionPost post = submissionPostRepository.findByTitle(submission);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username);
+        User user = authenticator.getCurrentUser();
         if (post != null && commentPost != null && !commentPost.getText().equals("")){
             commentPost.setContext(post);
             commentPost.setOp(user);
@@ -80,12 +77,23 @@ public class PostController {
         return "pageNotFound";
     }
 
+    @GetMapping("/posts/like")
+    public String likeSubmissionPost(HttpServletRequest request, @RequestParam(value="id") String submissionId) {
+        SubmissionPost post = submissionPostRepository.findById(Long.parseLong(submissionId));
+        User user = authenticator.getCurrentUser();
+        if (user != null && post != null) {
+            post.likePost(user);
+            submissionPostRepository.save(post);
+            String referer = request.getHeader("Referer");
+            return "redirect:" + referer;
+        }
+        return "pageNotFound";
+    }
+
     @GetMapping("/comments/upvote")
     public String upvoteComment(HttpServletRequest request, @RequestParam("id") String commentId) {
         CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId));
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username);
+        User user = authenticator.getCurrentUser();
         if (user != null && comment != null) {
             comment.upvote(user);
             commentPostRepository.save(comment);
@@ -98,9 +106,7 @@ public class PostController {
     @GetMapping("/comments/downvote")
     public String downvoteComment(HttpServletRequest request, @RequestParam("id") String commentId) {
         CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId));
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username);
+        User user = authenticator.getCurrentUser();
         if (user != null && comment != null) {
             comment.downvote(user);
             commentPostRepository.save(comment);
@@ -113,9 +119,7 @@ public class PostController {
     @PostMapping("/comments/{id}/reply")
     public String replyToComment(HttpServletRequest request, @PathVariable(value="id") String id, String reply) {
         CommentPost context = commentPostRepository.findById(Long.parseLong(id));
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username);
+        User user = authenticator.getCurrentUser();
         if (user != null && context != null && reply != null && reply != "") {
             CommentPost replyPost = new CommentPost(user, context, reply);
             commentPostRepository.save(replyPost);

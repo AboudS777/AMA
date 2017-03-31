@@ -30,21 +30,18 @@ public class TestSubmissionPost {
     }
 
     @Test
-    public void testOpLikedPost() throws Exception {
-        assertEquals(submissionPost.getUsersWhoLiked(), 1);
-    }
-
-    @Test
     public void testUserLikedPostTwice() throws Exception {
         submissionPost.likePost(sarran);
-        assertEquals(submissionPost.getUsersWhoLiked(), 1);
+        submissionPost.likePost(sarran);
+        assertEquals(submissionPost.getAmountOfLikes(), 1);
     }
 
     @Test
     public void testAnotherUserLikedPost() throws Exception{
         User kan = new User("kan", "theman");
         submissionPost.likePost(kan);
-        assertEquals(submissionPost.getUsersWhoLiked(),2);
+        submissionPost.likePost(sarran);
+        assertEquals(submissionPost.getAmountOfLikes(),2);
     }
 
 

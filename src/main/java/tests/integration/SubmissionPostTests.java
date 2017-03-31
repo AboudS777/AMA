@@ -8,6 +8,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import ama.account.User;
 import ama.account.UserService;
+import ama.post.SubmissionPost;
 import ama.post.SubmissionPostRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,9 +21,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import javax.transaction.Transactional;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 @WebAppConfiguration
@@ -69,8 +74,12 @@ public class SubmissionPostTests {
 
     @Test
     public void testGetSubmissionView() throws Exception {
+        SubmissionPost submission = new SubmissionPost();
+        submission.setTitle("TEST SUBMISSION VIEW");
+        submission.setText("test submission view text");
+        submissionPostRepository.save(submission);
         mvc
-                .perform(get("/posts/AMA Title")
+                .perform(get("/posts/" + submission.getTitle())
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().isOk())
@@ -103,4 +112,30 @@ public class SubmissionPostTests {
                 .andExpect(view().name("pageNotFound"));
     }
 
+    @Test
+    public void testLikeSubmissionPost() throws Exception {
+        SubmissionPost submission = new SubmissionPost();
+        submission.setTitle("TEST LIKE AMA");
+        submission.setText("test like ama text");
+        submission = submissionPostRepository.save(submission);
+        int submissionLikes = submission.getAmountOfLikes();
+        mvc
+                .perform(get("/posts/like")
+                        .param("id", submission.getId().toString())
+                        .with(csrf())
+                        .with(user("sarran")))
+                .andExpect(status().is3xxRedirection());
+        assert(submissionPostRepository.findById(submission.getId()).getAmountOfLikes() == submissionLikes+1);
+    }
+
+    @Test
+    public void testLikeInvalidSubmissionPost() throws Exception {
+        mvc
+                .perform(get("/posts/like")
+                        .param("id", "100")
+                        .with(csrf())
+                        .with(user("sarran")))
+                .andExpect(status().isOk())
+                .andExpect(view().name("pageNotFound"));
+    }
 }
