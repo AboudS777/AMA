@@ -1,4 +1,4 @@
-package tests.UnitTests;
+package tests.unit;
 
 import ama.account.User;
 import org.junit.After;
@@ -21,11 +21,6 @@ public class TestUser {
     @After
     public void tearDown() throws Exception {
        sarran = null;
-    }
-
-    @Test
-    public void testUser() throws Exception {
-        assertNotNull(sarran);
     }
 
     @Test

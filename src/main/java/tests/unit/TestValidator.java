@@ -1,4 +1,4 @@
-package tests.UnitTests;
+package tests.unit;
 
 import ama.Application;
 import ama.account.User;

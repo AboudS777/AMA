@@ -1,4 +1,4 @@
-package tests.UnitTests;
+package tests.unit;
 
 import ama.account.User;
 import ama.post.CommentPost;
@@ -31,13 +31,6 @@ public class TestCommentPost {
         kan = null;
         submissionPost = null;
         commentPost = null;
-    }
-
-    @Test
-    public void testCommentPost() throws Exception {
-        assertNotNull(sarran);
-        assertNotNull(submissionPost);
-        assertNotNull(commentPost);
     }
 
     @Test

@@ -1,4 +1,4 @@
-package tests.UnitTests;
+package tests.unit;
 
 import ama.account.User;
 import ama.post.SubmissionPost;
@@ -22,12 +22,6 @@ public class TestSubmissionPost {
     public void tearDown() throws Exception {
         sarran = null;
         submissionPost = null;
-    }
-
-    @Test
-    public void testSubmissionPost() throws Exception {
-        assertNotNull(sarran);
-        assertNotNull(submissionPost);
     }
 
     @Test

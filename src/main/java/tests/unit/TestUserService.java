@@ -1,4 +1,4 @@
-package tests.UnitTests;
+package tests.unit;
 
 import ama.Application;
 import ama.account.User;
@@ -41,10 +41,10 @@ public class TestUserService {
         assertEquals(registeredUser.getPassword(),sarran.getPassword());
     }
 
-    @Test(expected= NullPointerException.class)
+    @Test
     public void testLoadUserThatDoesNotExistByUsername() throws Exception {
-        UserDetails loadedUser = userService.loadUserByUsername(ryan.getUsername());
-        assertEquals(loadedUser.getUsername(),ryan.getUsername());
+        User loadedUser = userService.loadUserByUsername(ryan.getUsername());
+        assert(loadedUser == null);
     }
     @Test
     public void testLoadUserThatExistsByUsername() throws Exception {
