@@ -4,13 +4,12 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Id;
+import javax.persistence.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class User implements UserDetails {
@@ -26,6 +25,12 @@ public class User implements UserDetails {
     @NotNull
     @NotEmpty
     private String password;
+
+    @ManyToMany
+    private Set<User> following = new HashSet<User>();
+
+    @ManyToMany(mappedBy = "following")
+    private Set<User> followers = new HashSet<User>();
 
     public User() {
         this.username = null;
@@ -61,6 +66,30 @@ public class User implements UserDetails {
 
     public String getPassword() {
         return password;
+    }
+
+    public Set<User> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(Set<User> following) {
+        this.following = following;
+    }
+
+    public Set<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Set<User> followers) {
+        this.followers = followers;
+    }
+
+    public void follow(User user) {
+        this.following.add(user);
+    }
+
+    public void unfollow(User user) {
+        this.following.remove(user);
     }
 
     @Override

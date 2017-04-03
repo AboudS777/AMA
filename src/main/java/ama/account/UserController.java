@@ -1,5 +1,6 @@
 package ama.account;
 
+import ama.authentication.Authenticator;
 import ama.post.SubmissionPostRepository;
 import ama.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -19,6 +21,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private SubmissionPostRepository submissionPostRepository;
@@ -51,6 +56,34 @@ public class UserController {
             model.addAttribute("likedPosts", submissionPostRepository.findAllByUsersWhoLiked(user));
             // TODO: add attribute for following users
             return "user";
+        }
+        return "pageNotFound";
+    }
+
+    @GetMapping("user/{username}/follow")
+    public String followUser(HttpServletRequest request, @PathVariable(value = "username") String username) {
+        Authenticator auth = new Authenticator();
+        User loggedIn = auth.getCurrentUser();
+        User user = userService.loadUserByUsername(username);
+        if (user != null && loggedIn != null && user != loggedIn) {
+            loggedIn.follow(user);
+            userRepository.save(loggedIn);
+            String referer = request.getHeader("Referer");
+            return "redirect:" + referer;
+        }
+        return "pageNotFound";
+    }
+
+    @GetMapping("user/{username}/unfollow")
+    public String unfollowUser(HttpServletRequest request, @PathVariable(value = "username") String username) {
+        Authenticator auth = new Authenticator();
+        User loggedIn = auth.getCurrentUser();
+        User user = userService.loadUserByUsername(username);
+        if (user != null && loggedIn != null && user != loggedIn) {
+            loggedIn.unfollow(user);
+            userRepository.save(loggedIn);
+            String referer = request.getHeader("Referer");
+            return "redirect:" + referer;
         }
         return "pageNotFound";
     }
