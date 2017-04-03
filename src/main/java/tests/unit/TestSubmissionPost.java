@@ -15,7 +15,7 @@ public class TestSubmissionPost {
     @Before
     public void setUp() throws Exception {
         sarran  = new User("sarran","theman");
-        submissionPost = new SubmissionPost(sarran,"Title","This is a submissionPost");
+        submissionPost = new SubmissionPost(sarran,"Title","This is a submissionPost","hello,world");
     }
 
     @After
