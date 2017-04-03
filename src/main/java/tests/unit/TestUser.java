@@ -5,6 +5,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.HashSet;
+
 import static org.junit.Assert.*;
 
 public class TestUser {
@@ -63,6 +65,34 @@ public class TestUser {
     @Test
     public void testGetAuthorities() throws Exception {
         assertNull(sarran.getAuthorities());
+    }
+
+    @Test
+    public void testFollow() throws Exception {
+        User ryan = new User();
+        ryan.setUsername("ryan");
+        sarran.follow(ryan);
+        assertTrue(sarran.getFollowing().contains(ryan));
+    }
+
+    @Test
+    public void testUnfollow() throws Exception {
+        User ryan = new User();
+        ryan.setUsername("ryan");
+        sarran.follow(ryan);
+        sarran.unfollow(ryan);
+        assertFalse(sarran.getFollowing().contains(ryan));
+    }
+
+    @Test
+    public void testIsFollowedBy() throws Exception {
+        User ryan = new User();
+        ryan.setUsername("ryan");
+        HashSet<User> followers = new HashSet<>();
+        followers.add(sarran);
+        ryan.setFollowers(followers);
+        assertTrue(ryan.isFollowedBy(sarran.getUsername()));
+        assertFalse(ryan.isFollowedBy("other"));
     }
 
 }

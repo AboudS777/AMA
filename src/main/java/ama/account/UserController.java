@@ -31,6 +31,9 @@ public class UserController {
     @Autowired
     private Validator validator;
 
+    @Autowired
+    private Authenticator authenticator;
+
     @GetMapping("/registration")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
@@ -49,12 +52,11 @@ public class UserController {
 
     @GetMapping("/user/{username}")
     public String viewUserAccount(@PathVariable(value = "username") String username, Model model) {
-        User user = userService.loadUserByUsername(username);
+        User user = userRepository.findByUsername(username);
         if (!username.equals("") && user != null) {
             model.addAttribute("user", user);
             model.addAttribute("submissionPosts", submissionPostRepository.findByOp(user));
             model.addAttribute("likedPosts", submissionPostRepository.findAllByUsersWhoLiked(user));
-            // TODO: add attribute for following users
             return "user";
         }
         return "pageNotFound";
@@ -62,9 +64,8 @@ public class UserController {
 
     @GetMapping("user/{username}/follow")
     public String followUser(HttpServletRequest request, @PathVariable(value = "username") String username) {
-        Authenticator auth = new Authenticator();
-        User loggedIn = auth.getCurrentUser();
-        User user = userService.loadUserByUsername(username);
+        User loggedIn = authenticator.getCurrentUser();
+        User user = userRepository.findByUsername(username);
         if (user != null && loggedIn != null && user != loggedIn) {
             loggedIn.follow(user);
             userRepository.save(loggedIn);
@@ -76,9 +77,8 @@ public class UserController {
 
     @GetMapping("user/{username}/unfollow")
     public String unfollowUser(HttpServletRequest request, @PathVariable(value = "username") String username) {
-        Authenticator auth = new Authenticator();
-        User loggedIn = auth.getCurrentUser();
-        User user = userService.loadUserByUsername(username);
+        User loggedIn = authenticator.getCurrentUser();
+        User user = userRepository.findByUsername(username);
         if (user != null && loggedIn != null && user != loggedIn) {
             loggedIn.unfollow(user);
             userRepository.save(loggedIn);

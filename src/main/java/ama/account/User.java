@@ -26,11 +26,11 @@ public class User implements UserDetails {
     @NotEmpty
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<User> following = new HashSet<User>();
 
-    @ManyToMany(mappedBy = "following")
-    private Set<User> followers = new HashSet<User>();
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "following")
+    private Set<User> followers;
 
     public User() {
         this.username = null;
@@ -84,6 +84,15 @@ public class User implements UserDetails {
         this.followers = followers;
     }
 
+    public boolean isFollowedBy(String username) {
+        for (User u: followers) {
+            if (u.username.equals(username)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void follow(User user) {
         this.following.add(user);
     }
@@ -117,5 +126,22 @@ public class User implements UserDetails {
         return null;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        User user = (User) o;
+
+        if (!username.equals(user.username)) return false;
+        return password.equals(user.password);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        return result;
+    }
 }
