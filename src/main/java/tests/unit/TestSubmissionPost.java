@@ -5,6 +5,10 @@ import ama.post.SubmissionPost;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collection;
+import java.util.HashSet;
+
 import static org.junit.Assert.*;
 
 public class TestSubmissionPost {
@@ -42,6 +46,15 @@ public class TestSubmissionPost {
         submissionPost.likePost(kan);
         submissionPost.likePost(sarran);
         assertEquals(submissionPost.getAmountOfLikes(),2);
+    }
+
+    @Test
+    public void addTagsToPost() throws Exception{
+        HashSet<String> tags = new HashSet<String>();
+        tags.add("Hello");
+        tags.add("World");
+        submissionPost.setTags(tags);
+        assertEquals(submissionPost.getTags().size(),2);
     }
 
 

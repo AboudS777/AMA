@@ -17,8 +17,12 @@ public class SubmissionPost extends Post {
     private Date votingCloses;
     private Date answerCloses;
 
+
     @ManyToMany
     private Set<User> usersWhoLiked = new HashSet<>();
+
+    @ElementCollection
+    private Set<String> tags = new HashSet<>();
 
     public SubmissionPost() {}
 
@@ -35,6 +39,14 @@ public class SubmissionPost extends Post {
         return title;
     }
 
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
     public int getAmountOfLikes() {
         return usersWhoLiked.size();
     }
@@ -42,4 +54,6 @@ public class SubmissionPost extends Post {
     public void likePost(User user) {
         usersWhoLiked.add(user);
     }
+
+
 }

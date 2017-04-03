@@ -2,6 +2,7 @@ package tests.integration;
 
 import ama.*;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -23,6 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -58,18 +62,38 @@ public class SubmissionPostTests {
     }
 
     @Test
-    public void testPostAMASubmission() throws Exception {
+    public void testPostAMASubmissionNoTags() throws Exception {
         String amaTitle = "AMA Title";
         mvc
                 .perform(post("/create_submission")
                         .param("title", amaTitle)
                         .param("text", "AMA Text")
+                        .param("postTags", "")
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
 
         assert(submissionPostRepository.findByTitle(amaTitle) != null);
+        assert(submissionPostRepository.findByTitle(amaTitle).getTags().isEmpty());
+    }
+
+    @Test
+    public void testPostAMASubmissionWithTags() throws Exception {
+        String amaTitle = "AMA Title";
+        mvc
+                .perform(post("/create_submission")
+                        .param("title", amaTitle)
+                        .param("text", "AMA Text")
+                        .param("postTags","Hello,World")
+                        .with(csrf())
+                        .with(user("sarran")))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+
+        assert(submissionPostRepository.findByTitle(amaTitle) != null);
+        assert(submissionPostRepository.findByTitle(amaTitle).getTags().contains("Hello"));
+        assert(submissionPostRepository.findByTitle(amaTitle).getTags().contains("World"));
     }
 
     @Test
@@ -93,6 +117,7 @@ public class SubmissionPostTests {
                 .perform(post("/create_submission")
                         .param("title", amaTitleTooShort)
                         .param("text", "title is too short.")
+                        .param("postTags","")
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().isOk())
