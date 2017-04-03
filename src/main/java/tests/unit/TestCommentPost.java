@@ -27,7 +27,7 @@ public class TestCommentPost {
     public void setUp() throws Exception {
         sarran  = new User("sarran","theman");
         kan = new User("kan","theman");
-        submissionPost = new SubmissionPost(sarran,"Title","This is a post","hello,world");
+        submissionPost = new SubmissionPost(sarran,"Title","This is a post");
         commentPost = new CommentPost(kan,submissionPost,"This a comment");
     }
 

@@ -13,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -40,13 +42,16 @@ public class PostController {
     }
 
     @PostMapping("/create_submission")
-    public String postAMASubmission(@ModelAttribute("submissionPost") SubmissionPost post, BindingResult result){
+    public String postAMASubmission(@ModelAttribute("submissionPost") SubmissionPost post, @RequestParam("postTags") String postTags, BindingResult result){
         validator.validate(post, result);
         User user = authenticator.getCurrentUser();
         if(result.hasErrors()||user == null) {
             return "createsubmission";
         } else {
             post.setOp(user);
+            if(!postTags.equals("")) {
+                post.setTags(new HashSet<>(Arrays.asList(postTags.split(","))));
+            }
             submissionPostRepository.save(post);
             return "redirect:/";
         }

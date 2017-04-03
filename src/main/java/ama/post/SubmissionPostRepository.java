@@ -15,5 +15,5 @@ public interface SubmissionPostRepository extends PostRepository<SubmissionPost>
 
     List<SubmissionPost> findAllByUsersWhoLiked(User user);
 
-    List<SubmissionPost> findByTags(String tag);
+
 }

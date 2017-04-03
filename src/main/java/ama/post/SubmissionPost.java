@@ -14,7 +14,6 @@ import java.util.Set;
 public class SubmissionPost extends Post {
 
     private String title;
-    private String tags;
     private Date votingCloses;
     private Date answerCloses;
 
@@ -22,12 +21,14 @@ public class SubmissionPost extends Post {
     @ManyToMany
     private Set<User> usersWhoLiked = new HashSet<>();
 
+    @ElementCollection
+    private Set<String> tags = new HashSet<>();
+
     public SubmissionPost() {}
 
-    public SubmissionPost(User op, String title, String text, String tags) {
+    public SubmissionPost(User op, String title, String text) {
         super(op, text);
         this.title = title;
-        this.tags = tags;
     }
 
     public void setTitle(String title) {
@@ -38,19 +39,17 @@ public class SubmissionPost extends Post {
         return title;
     }
 
-    public String getTags() {
+    public Set<String> getTags() {
         return tags;
     }
 
-    public void setTags(String tags) {
+    public void setTags(Set<String> tags) {
         this.tags = tags;
     }
 
     public int getAmountOfLikes() {
         return usersWhoLiked.size();
     }
-
-
 
     public void likePost(User user) {
         usersWhoLiked.add(user);

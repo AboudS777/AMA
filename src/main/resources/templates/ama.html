@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container-fluid">
@@ -18,7 +19,8 @@
         <p><textarea rows="4" cols="50" th:field="*{text}">Ask your question...</textarea></p>
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
-    <p th:text="${post.tags}" data-role="tagsinput"></p>
+    <h3>Tags</h3>
+    <span th:each ="tag : ${post.tags}" th:text ="${tag}" >Tag</span>
     <h2>Comments</h2>
     <div class="panel panel-default">
         <ul class="list-group">
