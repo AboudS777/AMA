@@ -1,14 +1,30 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:include="fragments/layout :: page">
 <head>
     <meta charset="UTF-8"/>
     <title th:text="${user.username}">This is a user</title>
 </head>
 <body>
+
+<div th:fragment="content">
 <h1 th:text="|Summary for __(${user.username})__|">User's Summary</h1>
 <h2>Submitted AMAs</h2>
 <tr th:each="submission : ${submissionPosts}">
     <p><td><a th:href="@{/posts/__${submission.title}__}" th:text="${submission.title}">Title ...</a></td></p>
 </tr>
+
+<h2>Liked AMAs</h2>
+<tr th:each="liked : ${likedPosts}">
+    <p><td><a th:href="@{/posts/__${liked.title}__}" th:text="${liked.title}">Title ...</a></td></p>
+</tr>
+
+<h2>Following</h2>
+<tr th:each="user : ${following}">
+    <p><td><a th:href="@{/user/__${user.getUsername()}__}" th:text="${user.getUsername()}">Title ...</a></td></p>
+</tr>
+</div>
+
 </body>
+
+
 </html>
