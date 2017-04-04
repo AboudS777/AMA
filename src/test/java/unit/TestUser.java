@@ -1,4 +1,3 @@
-package tests.unit;
 
 import ama.account.User;
 import org.junit.After;

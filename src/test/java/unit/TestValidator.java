@@ -1,4 +1,4 @@
-package tests.unit;
+
 
 import ama.Application;
 import ama.account.User;
@@ -107,6 +107,7 @@ public class TestValidator {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(pastDate);
         calendar.add(Calendar.DATE, -1);
+        pastDate = calendar.getTime();
 
         submissionPost.setTitle("invalid date");
         submissionPost.setText("description");

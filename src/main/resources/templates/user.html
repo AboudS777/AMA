@@ -2,9 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:include="fragments/layout :: page (title=${user.username})">
 <body>
 <div th:fragment="content">
-    <div th:text="${#httpServletRequest.remoteUser}"></div>
-
-
     <h1 th:text="|Summary for __(${user.username})__|">User's Summary</h1>
     <h2>Submitted AMAs</h2>
     <tr th:each="submission : ${submissionPosts}">
@@ -20,12 +17,11 @@
     <tr th:each="u : ${user.getFollowing()}">
         <p><td><a th:href="@{/user/__${u.getUsername()}__}" th:text="${u.getUsername()}">Title ...</a></td></p>
     </tr>
-    <span th:if="${#httpServletRequest.remoteUser} != ${user.username}">
-        <a th:if="!${user.isFollowedBy(#httpServletRequest.remoteUser)}" th:href="@{/user/__${user.getUsername()}__/follow}">Follow</a>
-        <a th:if="${user.isFollowedBy(#httpServletRequest.remoteUser)}" th:href="@{/user/__${user.getUsername()}__/unfollow}">Unfollow</a>
-    </span>
+    <span th:if="${#httpServletRequest.remoteUser != null} and ${#httpServletRequest.remoteUser != user.username}">
+                <a th:if="!${user.isFollowedBy(#httpServletRequest.remoteUser)}" th:href="@{/user/__${user.getUsername()}__/follow}">Follow</a>
+                <a th:if="${user.isFollowedBy(#httpServletRequest.remoteUser)}" th:href="@{/user/__${user.getUsername()}__/unfollow}">Unfollow</a>
+            </span>
 
 </div>
-
 </body>
 </html>
