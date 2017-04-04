@@ -30,7 +30,7 @@ public class User implements UserDetails {
     private Set<User> following = new HashSet<User>();
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "following")
-    private Set<User> followers;
+    private Set<User> followers = new HashSet<>();
 
     public User() {
         this.username = null;
