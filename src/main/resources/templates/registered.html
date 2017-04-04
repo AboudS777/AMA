@@ -1,13 +1,11 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Registration Complete</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:include="fragments/layout :: page (title='Registration Complete')">
 <body>
-<h1>Registered</h1>
-<!--/*@thymesVar id="user" type="User"*/-->
-<p th:text="'You are now registered as: ' + ${user.username}" />
-<a href="/login">Click here to login</a>
+<div th:fragment="content">
+    <h1>Registration Complete</h1>
+    <!--/*@thymesVar id="user" type="User"*/-->
+    <p th:text="'You are now registered as: ' + ${user.username}" />
+    <a href="/login">Click here to login</a>
+</div>
 </body>
 </html>

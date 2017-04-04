@@ -1,10 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8"/>
-    <title>Page Not Found</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" lang="en" th:include="fragments/layout :: page (title='Page Not Found')">
 <body>
+<div th:fragment="content">
     <h1>Woops. This page does not exist.</h1>
+</div>
 </body>
 </html>

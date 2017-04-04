@@ -98,11 +98,6 @@ public class UserController {
         return "redirect:/account";
     }
 
-    @GetMapping("/account")
-    public String viewAccount(Model model) {
-        return "account";
-    }
-
     @PostMapping("/logout")
     public String signOut(Model model) {
         return "home";

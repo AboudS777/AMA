@@ -26,7 +26,7 @@ public class TestUserRepository {
 
     @Before
     public void setUp() throws Exception {
-        sarran  = new User("sarran","theman");
+        sarran  = new User("sarran2","theman");
     }
 
     @After
@@ -45,9 +45,9 @@ public class TestUserRepository {
 
     @Test
     public void testFindByFollowers() throws Exception {
-        User ryan = new User("ryan", "abcd");
-        User phane = new User("phane", "abcd");
-        User aboud = new User("aboud", "abcd");
+        User ryan = new User("ryan3", "abcd");
+        User phane = new User("phane4", "abcd");
+        User aboud = new User("aboud5", "abcd");
         userRepository.save(ryan);
         userRepository.save(phane);
         userRepository.save(aboud);

@@ -1,53 +1,23 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>Welcome</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:include="fragments/layout :: page (title='Welcome')">
 <body>
-<div class="container">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand">GANGANGANG</a>
-            </div>
-            <div id="navbar" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/registration">Register</a></li>
-                    <li><a href="/create_submission">Submit an AMA</a></li>
-                    <li th:if="${currentUser != null}"><a th:href="@{/user/__${currentUser.username}__}">My Summary</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <p th:if="${currentUser != null}" class="navbar-text" th:inline="text">Signed in as [[${currentUser.username}]]</p>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <form id="reply" th:action="@{/search}" method="get">
-        <input type="text" name="search" /><input type="submit" value="Search" />
-    </form>
-    <div class="container-fluid">
-        <h2>Current AMAs</h2>
-        <!--/*@thymesVar id="submissionPosts" type="java.lang.Iterable"*/-->
-        <div class="panel panel-default">
-            <ul class="list-group">
-                <li class="list-group-item" th:each="submission : ${submissionPosts}">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <a th:href="@{/posts/__${submission.title}__}" th:text="${submission.title}">Title ...</a>
-                            <span th:text="|(${submission.getAmountOfLikes()}) |"/><a th:href="@{/posts/like(id=${submission.id})}">Like</a>
-                        </div>
-                        <div class="panel-footer">
-                            <span text="submitted by "/><a th:href="@{/user/__${submission.op.username}__}" th:text="|${submission.op.username}|"></a>
-                        </div>
+<div th:fragment="content">
+    <h2>Current AMAs</h2>
+    <!--/*@thymesVar id="submissionPosts" type="java.lang.Iterable"*/-->
+    <div class="panel panel-default">
+        <ul class="list-group">
+            <li class="list-group-item" th:each="submission : ${submissionPosts}">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <a th:href="@{/posts/__${submission.title}__}" th:text="${submission.title}">Title ...</a>
+                        <span th:text="|(${submission.getAmountOfLikes()}) |"/><a th:href="@{/posts/like(id=${submission.id})}">Like</a>
                     </div>
-                </li>
-            </ul>
-        </div>
+                    <div class="panel-footer">
+                        <span text="submitted by "/><a th:href="@{/user/__${submission.op.username}__}" th:text="|${submission.op.username}|"></a>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 </div>
 </body>
