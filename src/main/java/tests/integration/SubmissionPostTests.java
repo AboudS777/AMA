@@ -74,7 +74,10 @@ public class SubmissionPostTests {
                 .andExpect(redirectedUrl("/"));
 
         assert(submissionPostRepository.findByTitle(amaTitle) != null);
-        assert(submissionPostRepository.findByTitle(amaTitle).getTags().isEmpty());
+        assert(submissionPostRepository.findByTitle(amaTitle).getTags().size() == 3);
+        assert(submissionPostRepository.findByTitle(amaTitle).getTags().contains("AMA"));
+        assert(submissionPostRepository.findByTitle(amaTitle).getTags().contains("Title"));
+        assert(submissionPostRepository.findByTitle(amaTitle).getTags().contains("sarran"));
     }
 
     @Test
