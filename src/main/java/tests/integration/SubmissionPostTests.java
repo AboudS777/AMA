@@ -109,7 +109,7 @@ public class SubmissionPostTests {
         submission.setAnswerCloses(new Date());
         submissionPostRepository.save(submission);
         mvc
-                .perform(get("/posts/" + submission.getTitle())
+                .perform(get("/posts/" + submission.getId())
                         .with(csrf())
                         .with(user("sarran")))
                 .andExpect(status().isOk())

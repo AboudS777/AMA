@@ -60,15 +60,19 @@ public class PostController {
     }
 
     @GetMapping("/posts/{submission}")
-    public String getSubmissionView(@PathVariable(value = "submission") String submission, Model model) {
-        SubmissionPost post = submissionPostRepository.findByTitle(submission);
-        if (post != null) {
-            model.addAttribute("commentPost", new CommentPost());
-            model.addAttribute("post", post);
-            model.addAttribute("baseComments", getBaseComments(post));
-            return "ama";
+    public String getSubmissionView(@PathVariable(value = "submission") String submissionId, Model model) {
+        try {
+            SubmissionPost post = submissionPostRepository.findById(Long.parseLong(submissionId));
+            if (post != null) {
+                model.addAttribute("commentPost", new CommentPost());
+                model.addAttribute("post", post);
+                model.addAttribute("baseComments", getBaseComments(post));
+                return "ama";
+            }
+            return "pageNotFound";
+        } catch(NumberFormatException n) {
+            return "pageNotFound";
         }
-        return "pageNotFound";
     }
 
     @PostMapping("/posts/{submission}")
