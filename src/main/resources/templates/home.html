@@ -2,9 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" th:include="fragments/layout :: page (title='Welcome')">
 <body>
 <div th:fragment="content">
-    <form id="reply" th:action="@{/search}" method="get">
-        <input type="text" name="search" /><input type="submit" value="Search" />
-    </form>
     <h2>Current AMAs</h2>
     <!--/*@thymesVar id="submissionPosts" type="java.lang.Iterable"*/-->
     <div class="panel panel-default">

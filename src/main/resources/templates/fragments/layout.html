@@ -25,6 +25,12 @@
                     <li th:if="${#httpServletRequest.remoteUser != null}"><a href="#" onclick="document.forms[0].submit(); return false;">Sign Out</a></li>
                 </ul>
                 <form action="/logout" method="post"/>
+                <form action="/search" method="get" class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input name="search" type="text" class="form-control"/>
+                    </div>
+                    <button type="submit" class="btn btn-default">Search</button>
+                </form>
                 <ul class="nav navbar-nav navbar-right">
                     <p th:if="${#httpServletRequest.remoteUser != null}" class="navbar-text" th:inline="text">Signed in as <a th:href="@{/user/__${#httpServletRequest.remoteUser}__}">[[${#httpServletRequest.remoteUser}]]</a></p>
                 </ul>
