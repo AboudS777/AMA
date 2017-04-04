@@ -27,6 +27,9 @@
         </div>
     </nav>
 
+    <form id="reply" th:action="@{/search}" method="get">
+        <input type="text" name="search" /><input type="submit" value="Search" />
+    </form>
     <div class="container-fluid">
         <h2>Current AMAs</h2>
         <!--/*@thymesVar id="submissionPosts" type="java.lang.Iterable"*/-->

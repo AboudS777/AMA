@@ -10,10 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Stephane on 2017-03-19.
@@ -47,9 +44,16 @@ public class PostController {
             return "createsubmission";
         } else {
             post.setOp(user);
+            HashSet<String> tags = new HashSet<>();
             if(!postTags.equals("")) {
-                post.setTags(new HashSet<>(Arrays.asList(postTags.split(","))));
+                tags = new HashSet<>(Arrays.asList(postTags.split(",")));
             }
+            List<String> titleWords = Arrays.asList(post.getTitle().split(" "));
+            for (String word : titleWords) {
+                tags.add(word);
+            }
+            tags.add(user.getUsername());
+            post.setTags(tags);
             submissionPostRepository.save(post);
             return "redirect:/";
         }
