@@ -19,13 +19,14 @@
             </div>
             <div id="navbar" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/registration">Register</a></li>
-                    <li><a href="/create_submission">Submit an AMA</a></li>
-                    <li th:if="${#httpServletRequest.remoteUser != null}"><a th:href="@{/user/__${#httpServletRequest.remoteUser}__}">My Summary</a></li>
+                    <li th:if="${#httpServletRequest.remoteUser == null}"><a href="/login">Login</a></li>
+                    <li th:if="${#httpServletRequest.remoteUser == null}"><a href="/registration">Sign Up</a></li>
+                    <li th:if="${#httpServletRequest.remoteUser != null}"><a href="/create_submission">Submit an AMA</a></li>
+                    <li th:if="${#httpServletRequest.remoteUser != null}"><a href="#" onclick="document.forms[0].submit(); return false;">Sign Out</a></li>
                 </ul>
+                <form action="/logout" method="post"/>
                 <ul class="nav navbar-nav navbar-right">
-                    <p th:if="${#httpServletRequest.remoteUser != null}" class="navbar-text" th:inline="text">Signed in as [[${#httpServletRequest.remoteUser}]]</p>
+                    <p th:if="${#httpServletRequest.remoteUser != null}" class="navbar-text" th:inline="text">Signed in as <a th:href="@{/user/__${#httpServletRequest.remoteUser}__}">[[${#httpServletRequest.remoteUser}]]</a></p>
                 </ul>
             </div>
         </div>
