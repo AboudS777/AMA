@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,6 +47,18 @@ public class Validator {
             }
             if (submissionPostRepository.findByTitle(post.getTitle()) != null) {
                 result.rejectValue("title", "Duplicate.post.title", "An AMA with this title already exists.");
+            }
+
+            if (post.getVotingCloses() == null) {
+                result.rejectValue("votingCloses","Null.post.votingCloses","Must select a date that voting closes.");
+            } else if (post.getVotingCloses().before(new Date())) {
+                result.rejectValue("votingCloses","Past.post.votingCloses","This date is in the past.");
+            }
+
+            if (post.getAnswerCloses() == null) {
+                result.rejectValue("answerCloses","Null.post.answerCloses","Must select a date that answer closes.");
+            } else if (post.getAnswerCloses().before(new Date())) {
+                result.rejectValue("answerCloses","Past.post.answerCloses","This date is in the past.");
             }
         }
     }

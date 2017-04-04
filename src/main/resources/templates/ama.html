@@ -15,6 +15,8 @@
     <a href="/">Home</a>
     <h1 th:text="${post.title}">AMATitle</h1>
     <h2><p th:text="${post.text}">amadescription</p></h2>
+    <p id="votingcountdowntimer">Voting closes in: </p>
+    <p id="answercountdowntimer">AMA closes in: </p>
     <form action="#" th:action="@{/posts/__${submission}__}" th:object="${commentPost}" method="post">
         <p><textarea rows="4" cols="50" th:field="*{text}">Ask your question...</textarea></p>
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
@@ -28,10 +30,14 @@
             <li class="list-group-item" th:each="comment : ${baseComments}">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <span th:href="@{/user/__${comment.op.username}__}" th:text="|${comment.op.username}|"></span>
+                        <p><span th:href="@{/user/__${comment.op.username}__}" th:text="|${comment.op.username}|"></span></p>
                         <span th:text="|${comment.text} |"></span>
-                        <span th:text="|(${comment.getPoints()}) |"/><a th:href="@{/comments/upvote(id=${comment.id})}">Upvote</a> <a th:href="@{/comments/downvote(id=${comment.id})}">Downvote</a>
-                        <form th:action="@{/comments/__${comment.id}__/reply}" method="post">
+                        <span th:text="|(${comment.getPoints()}) |"/>
+                        <div id="vote">
+                            <a th:href="@{/comments/upvote(id=${comment.id})}">Upvote</a>
+                            <a th:href="@{/comments/downvote(id=${comment.id})}">Downvote</a>
+                        </div>
+                        <form id="reply" th:action="@{/comments/__${comment.id}__/reply}" method="post">
                             <input type="text" name="reply" /><input type="submit" value="Reply" />
                         </form>
                     </div>
@@ -45,6 +51,43 @@
         </ul>
     </div>
 </div>
-</body>
 
+<script th:inline="javascript">
+    //<![CDATA[
+    var votingCountDownDate = [[${post.votingCloses.getTime()}]];
+    var answerCountDownDate = [[${post.answerCloses.getTime()}]];
+    var votingTimer;
+    var answerTimer;
+
+    function CountDownTimer(countDownDate, stringId, text, timer) {
+        var now = new Date().getTime();
+
+        var votingDistance = countDownDate - now;
+
+        var days = Math.floor(votingDistance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((votingDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((votingDistance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((votingDistance % (1000 * 60)) / 1000);
+
+        document.getElementById(stringId).innerHTML = text + days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s ";
+
+        if (votingDistance < 0) {
+            clearInterval(timer);
+            document.getElementById(stringId).innerHTML = text + " EXPIRED";
+        }
+    }
+    // Update the count down every 1 second
+    votingTimer = setInterval(function() {CountDownTimer(votingCountDownDate, 'votingcountdowntimer', "Voting closes in: ", votingTimer)}, 1000);
+    answerTimer = setInterval(function() {CountDownTimer(answerCountDownDate, 'answercountdowntimer', "AMA closes in: ", answerTimer)}, 1000);
+    var currentTime = new Date().getTime();
+    if(votingCountDownDate - currentTime < 0) {
+        document.getElementById('vote').style.display = 'none';
+    }
+    if(answerCountDownDate - currentTime < 0) {
+        document.getElementById('reply').style.display = 'none';
+    }
+    //]]>
+</script>
+</body>
 </html>

@@ -5,6 +5,8 @@ import ama.account.User;
 import ama.account.UserService;
 import ama.post.CommentPost;
 import ama.post.CommentPostRepository;
+import ama.post.SubmissionPost;
+import ama.post.SubmissionPostRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.transaction.Transactional;
+
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -44,6 +49,9 @@ public class CommentVoteTests {
 
     @Autowired
     private CommentPostRepository commentPostRepository;
+
+    @Autowired
+    private SubmissionPostRepository submissionPostRepository;
 
     @Autowired
     private UserService userService;
@@ -84,11 +92,10 @@ public class CommentVoteTests {
     public void testUpvoteInvalidComment() throws Exception {
         mvc
                 .perform(get("/comments/upvote")
-                        .param("id", "10")
+                        .param("id", "100")
                         .with(csrf())
                         .with(user("sarran")))
-                .andExpect(status().isOk())
-                .andExpect(view().name("pageNotFound"));
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -110,7 +117,36 @@ public class CommentVoteTests {
                         .param("id", "10")
                         .with(csrf())
                         .with(user("sarran")))
-                .andExpect(status().isOk())
-                .andExpect(view().name("pageNotFound"));
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void testUpvoteCommentAfterVotingCloses() throws Exception {
+        Date pastDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(pastDate);
+        calendar.add(Calendar.DATE, -1);
+
+        SubmissionPost post = new SubmissionPost();
+        post.setTitle("upvotecommentaftervote");
+        post.setText("aftervotingcloses");
+        post.setVotingCloses(pastDate);
+        post.setAnswerCloses(pastDate);
+        submissionPostRepository.save(post);
+
+        CommentPost comment = new CommentPost();
+        comment.setText("This is a comment.");
+        comment.setContext(post);
+        comment = commentPostRepository.save(comment);
+
+        int commentPostRepositoryPoints = comment.getPoints();
+        mvc
+                .perform(get("/comments/upvote")
+                        .param("id", comment.getId().toString())
+                        .with(csrf())
+                        .with(user("sarran")))
+                .andExpect(status().is3xxRedirection());
+        //ensure that comment hasn't been upvoted
+        assert(commentPostRepositoryPoints == commentPostRepository.findById(comment.getId()).getPoints());
     }
 }

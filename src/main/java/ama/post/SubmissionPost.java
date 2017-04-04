@@ -1,6 +1,7 @@
 package ama.post;
 
 import ama.account.User;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,7 +15,9 @@ import java.util.Set;
 public class SubmissionPost extends Post {
 
     private String title;
+    @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private Date votingCloses;
+    @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm")
     private Date answerCloses;
 
 
@@ -54,6 +57,19 @@ public class SubmissionPost extends Post {
     public void likePost(User user) {
         usersWhoLiked.add(user);
     }
+    public Date getVotingCloses() {
+        return votingCloses;
+    }
 
+    public void setVotingCloses(Date votingCloses) {
+        this.votingCloses = votingCloses;
+    }
 
+    public Date getAnswerCloses() {
+        return answerCloses;
+    }
+
+    public void setAnswerCloses(Date answerCloses) {
+        this.answerCloses = answerCloses;
+    }
 }

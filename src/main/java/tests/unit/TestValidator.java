@@ -15,6 +15,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+
+import java.util.Calendar;
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 
 
@@ -56,7 +60,7 @@ public class TestValidator {
     }
 
     @Test
-    public void testInValidUsername() throws Exception {
+    public void testInvalidUsername() throws Exception {
         sarran.setUsername("s");
         result = new BeanPropertyBindingResult(sarran,"sarran");
         validator.validate(sarran,result);
@@ -64,7 +68,7 @@ public class TestValidator {
     }
 
     @Test
-    public void testInValidPassword() throws Exception {
+    public void testInvalidPassword() throws Exception {
         sarran.setPassword("p");
         result = new BeanPropertyBindingResult(sarran,"sarran");
         validator.validate(sarran,result);
@@ -82,20 +86,47 @@ public class TestValidator {
 
     @Test
     public void testValidPost() throws Exception {
+        Date futureDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(futureDate);
+        calendar.add(Calendar.DATE, 1);
+
+        futureDate = calendar.getTime();
         submissionPost.setTitle("TITLE");
         submissionPost.setText("Description");
+        submissionPost.setVotingCloses(futureDate);
+        submissionPost.setAnswerCloses(futureDate);
         result = new BeanPropertyBindingResult(submissionPost,"submissionPost");
         validator.validate(submissionPost,result);
         assertEquals(result.hasErrors(),false);
     }
 
     @Test
-    public void testInValidPost() throws Exception {
+    public void testInvalidDate() throws Exception {
+        Date pastDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(pastDate);
+        calendar.add(Calendar.DATE, -1);
+
+        submissionPost.setTitle("invalid date");
+        submissionPost.setText("description");
+        submissionPost.setVotingCloses(pastDate);
+        submissionPost.setAnswerCloses(pastDate);
+        result = new BeanPropertyBindingResult(submissionPost,"submissionPost");
+        validator.validate(submissionPost,result);
+        assertEquals(result.hasFieldErrors("votingCloses"), true);
+        assertEquals(result.hasFieldErrors("answerCloses"), true);
+    }
+
+    @Test
+    public void testInvalidPost() throws Exception {
         submissionPost.setTitle("T");
         submissionPost.setText("Description");
         result = new BeanPropertyBindingResult(submissionPost,"submissionPost");
         validator.validate(submissionPost,result);
         assertEquals(result.hasFieldErrors("title"),true);
+        assertEquals(result.hasFieldErrors("votingCloses"),true);
+        assertEquals(result.hasFieldErrors("answerCloses"),true);
     }
 
     @Test

@@ -19,7 +19,12 @@
     <p><textarea rows="4" cols="50" th:field="*{text}">Enter description...</textarea></p>
     <h2>Tags</h2>
     <input type="text" name = "postTags" data-role="tagsinput"/>
-
+    <h2>Voting Closes</h2>
+    <p th:if="${#fields.hasErrors('votingCloses')}" th:errors="*{votingCloses}"></p>
+    <p><input type="datetime-local" th:field="*{votingCloses}" /></p>
+    <h2>Answer Closes</h2>
+    <p th:if="${#fields.hasErrors('answerCloses')}" th:errors="*{answerCloses}"></p>
+    <p><input type="datetime-local" th:field="*{answerCloses}" /></p>
     <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
 </form>
 </body>
