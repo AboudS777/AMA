@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" th:include="fragments/layout :: page (title='${#httpServletRequest.remoteUser}')">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:include="fragments/layout :: page (title=${#httpServletRequest.remoteUser})">
     <body>
         <div th:fragment="content">
             <h1 th:text="|Summary for __(${user.username})__|">User's Summary</h1>

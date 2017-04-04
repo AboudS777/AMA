@@ -1,31 +1,25 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Post</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="http://bootstrap-tagsinput.github.io/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js"></script>
-</head>
+<html xmlns:th="http://www.thymeleaf.org" th:include="fragments/layout :: page (title='Submit an AMA')">
 <body>
-<!--/*@thymesVar id="submissionPost" type="SubmissionPost"*/-->
-<h1>Submit an AMA</h1>
-<form action="#" th:action="@{/create_submission}" th:object="${submissionPost}" method="post">
-    <h2>Title</h2>
-    <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
-    <p><input type="text" th:field="*{title}" /></p>
-    <h2>Description</h2>
-    <p><textarea rows="4" cols="50" th:field="*{text}">Enter description...</textarea></p>
-    <h2>Tags</h2>
-    <input type="text" name = "postTags" data-role="tagsinput"/>
-    <h2>Voting Closes</h2>
-    <p th:if="${#fields.hasErrors('votingCloses')}" th:errors="*{votingCloses}"></p>
-    <p><input type="datetime-local" th:field="*{votingCloses}" /></p>
-    <h2>Answer Closes</h2>
-    <p th:if="${#fields.hasErrors('answerCloses')}" th:errors="*{answerCloses}"></p>
-    <p><input type="datetime-local" th:field="*{answerCloses}" /></p>
-    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
-</form>
+<div th:fragment="content">
+    <!--/*@thymesVar id="submissionPost" type="SubmissionPost"*/-->
+    <h1>Submit an AMA</h1>
+    <form action="#" th:action="@{/create_submission}" th:object="${submissionPost}" method="post">
+        <h2>Title</h2>
+        <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+        <p><input type="text" th:field="*{title}" /></p>
+        <h2>Description</h2>
+        <p><textarea rows="4" cols="50" th:field="*{text}">Enter description...</textarea></p>
+        <h2>Tags</h2>
+        <input type="text" name = "postTags" data-role="tagsinput"/>
+        <h2>Voting Closes</h2>
+        <p th:if="${#fields.hasErrors('votingCloses')}" th:errors="*{votingCloses}"></p>
+        <p><input type="datetime-local" th:field="*{votingCloses}" /></p>
+        <h2>Answer Closes</h2>
+        <p th:if="${#fields.hasErrors('answerCloses')}" th:errors="*{answerCloses}"></p>
+        <p><input type="datetime-local" th:field="*{answerCloses}" /></p>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+</div>
 </body>
 </html>
