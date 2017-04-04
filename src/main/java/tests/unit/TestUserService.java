@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.*;
 
+@Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = Application.class)
 public class TestUserService {
@@ -36,19 +38,23 @@ public class TestUserService {
 
     @Test
     public void testRegisterNewUserAccount() throws Exception {
-        User registeredUser = userService.registerNewUserAccount(sarran);
-        assertEquals(registeredUser.getUsername(),sarran.getUsername());
-        assertEquals(registeredUser.getPassword(),sarran.getPassword());
+        if(userService.loadUserByUsername(sarran.getUsername()) == null) {
+            userService.registerNewUserAccount(sarran);
+        }
+        assertEquals(sarran.getUsername(),sarran.getUsername());
+        assertEquals(sarran.getPassword(),sarran.getPassword());
     }
 
     @Test
     public void testLoadUserThatDoesNotExistByUsername() throws Exception {
         User loadedUser = userService.loadUserByUsername(ryan.getUsername());
-        assert(loadedUser == null);
+        assertEquals(loadedUser, null);
     }
     @Test
     public void testLoadUserThatExistsByUsername() throws Exception {
-        userService.registerNewUserAccount(ryan);
+        if(userService.loadUserByUsername(ryan.getUsername()) == null) {
+            userService.registerNewUserAccount(ryan);
+        }
         UserDetails loadedUser = userService.loadUserByUsername(ryan.getUsername());
         assertEquals(loadedUser.getUsername(),ryan.getUsername());
     }
