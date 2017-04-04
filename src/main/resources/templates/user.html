@@ -6,20 +6,20 @@
 
 
     <h1 th:text="|Summary for __(${user.username})__|">User's Summary</h1>
-<h2>Submitted AMAs</h2>
-<tr th:each="submission : ${submissionPosts}">
-    <p><td><a th:href="@{/posts/__${submission.id}__}" th:text="${submission.title}">Title ...</a></td></p>
-</tr>
+    <h2>Submitted AMAs</h2>
+    <tr th:each="submission : ${submissionPosts}">
+        <p><td><a th:href="@{/posts/__${submission.id}__}" th:text="${submission.title}">Title ...</a></td></p>
+    </tr>
 
-<h2>Liked AMAs</h2>
-<tr th:each="liked : ${likedPosts}">
-    <p><td><a th:href="@{/posts/__${liked.id}__}" th:text="${liked.title}">Title ...</a></td></p>
-</tr>
+    <h2>Liked AMAs</h2>
+    <tr th:each="liked : ${likedPosts}">
+        <p><td><a th:href="@{/posts/__${liked.id}__}" th:text="${liked.title}">Title ...</a></td></p>
+    </tr>
 
-<h2>Following</h2>
-<tr th:each="u : ${user.getFollowing()}">
-    <p><td><a th:href="@{/user/__${u.getUsername()}__}" th:text="${u.getUsername()}">Title ...</a></td></p>
-</tr>
+    <h2>Following</h2>
+    <tr th:each="u : ${user.getFollowing()}">
+        <p><td><a th:href="@{/user/__${u.getUsername()}__}" th:text="${u.getUsername()}">Title ...</a></td></p>
+    </tr>
     <span th:if="${#httpServletRequest.remoteUser} != ${user.username}">
         <a th:if="!${user.isFollowedBy(#httpServletRequest.remoteUser)}" th:href="@{/user/__${user.getUsername()}__/follow}">Follow</a>
         <a th:if="${user.isFollowedBy(#httpServletRequest.remoteUser)}" th:href="@{/user/__${user.getUsername()}__/unfollow}">Unfollow</a>
