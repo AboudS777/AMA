@@ -1,4 +1,3 @@
-package tests.integration;
 
 import ama.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;

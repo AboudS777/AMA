@@ -9,7 +9,7 @@
             <li class="list-group-item" th:each="submission : ${submissionPosts}">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <a th:href="@{/posts/__${submission.title}__}" th:text="${submission.title}">Title ...</a>
+                        <a th:href="@{/posts/__${submission.id}__}" th:text="${submission.title}">Title ...</a>
                         <span th:text="|(${submission.getAmountOfLikes()}) |"/><a th:href="@{/posts/like(id=${submission.id})}">Like</a>
                     </div>
                     <div class="panel-footer">

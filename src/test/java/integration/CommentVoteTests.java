@@ -1,4 +1,3 @@
-package tests.integration;
 
 import ama.Application;
 import ama.account.User;
