@@ -76,8 +76,8 @@ public class PostController {
     }
 
     @PostMapping("/posts/{submission}")
-    public String addCommentToSubmission(@PathVariable(value = "submission") String submission,@ModelAttribute("commentPost") CommentPost commentPost) {
-        SubmissionPost post = submissionPostRepository.findByTitle(submission);
+    public String addCommentToSubmission(@PathVariable(value = "submission") String submissionId,@ModelAttribute("commentPost") CommentPost commentPost) {
+        SubmissionPost post = submissionPostRepository.findById(Long.parseLong(submissionId));
         User user = authenticator.getCurrentUser();
         Date now = new Date();
         if (post != null && commentPost != null && !commentPost.getText().equals("") && now.before(post.getVotingCloses())){
