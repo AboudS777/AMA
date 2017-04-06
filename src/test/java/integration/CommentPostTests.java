@@ -77,12 +77,12 @@ public class CommentPostTests {
 
         String commentText = "test comment on valid submission";
         mvc
-                .perform(post("/posts/" + post.getTitle())
+                .perform(post("/posts/" + post.getId())
                         .with(csrf())
                         .with(user("sarran"))
                         .param("text", commentText))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/posts/Valid%20AMA%20Submission"));
+                .andExpect(redirectedUrl("/posts/" + post.getId()));
         assert(commentPostRepository.findByContext(post).get(0).getText().equals(commentText));
     }
 
@@ -102,12 +102,12 @@ public class CommentPostTests {
         String commentText = "test comment after voting closes";
         int commentPostRepositorySizeBeforePost = commentPostRepository.findAll().size();
         mvc
-                .perform(post("/posts/" + post.getTitle())
+                .perform(post("/posts/" + post.getId())
                         .with(csrf())
                         .with(user("sarran"))
                         .param("text", commentText))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/posts/" + post.getTitle()));
+                .andExpect(redirectedUrl("/posts/" + post.getId()));
         assert(commentPostRepositorySizeBeforePost == commentPostRepository.findAll().size());
     }
 
@@ -120,7 +120,7 @@ public class CommentPostTests {
                         .with(csrf())
                         .with(user("sarran"))
                         .param("text", commentText))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isOk());
         assert(commentPostRepository.findAll().size() == commentRepositorySize);
     }
 
@@ -138,7 +138,7 @@ public class CommentPostTests {
         post.setAnswerCloses(futureDate);
         post = submissionPostRepository.save(post);
         mvc
-                .perform(post("/posts/" + post.getTitle())
+                .perform(post("/posts/" + post.getId())
                         .with(csrf())
                         .with(user("sarran"))
                         .param("text", ""))
