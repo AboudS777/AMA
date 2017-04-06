@@ -30,6 +30,7 @@
                     </div>
                     <div class="panel-footer">
                         <div style="background-color: #fff;" class="well well-sm" th:each="reply : ${comment.getSortedReplies()}">
+                            <p><span th:href="@{/user/__${reply.op.username}__}" th:text="|${reply.op.username}|"></span></p>
                             <span th:text="|${reply.text} |"/><span th:text="|(${reply.getPoints()}) |"/><a th:href="@{/comments/upvote(id=${reply.id})}">Upvote</a> <a th:href="@{/comments/downvote(id=${reply.id})}">Downvote</a>
                         </div>
                     </div>
@@ -37,44 +38,51 @@
             </li>
         </ul>
     </div>
+
+    <script th:inline="javascript">
+        //<![CDATA[
+
+
+        function CountDownTimer(countDownDate, stringId, text, timer) {
+            var now = new Date().getTime();
+
+            var votingDistance = countDownDate - now;
+
+            var days = Math.floor(votingDistance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((votingDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((votingDistance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((votingDistance % (1000 * 60)) / 1000);
+
+            document.getElementById(stringId).innerHTML = text + days + "d " + hours + "h "
+                + minutes + "m " + seconds + "s ";
+
+            if (votingDistance < 0) {
+                clearInterval(timer);
+                document.getElementById(stringId).innerHTML = text + " EXPIRED";
+            }
+        }
+
+        $(document).ready(function() {
+            var votingCountDownDate = [[${post.votingCloses.getTime()}]];
+            var answerCountDownDate = [[${post.answerCloses.getTime()}]];
+            var votingTimer;
+            var answerTimer;
+            // Update the count down every 1 second
+            votingTimer = setInterval(function() {CountDownTimer(votingCountDownDate, 'votingcountdowntimer', "Voting closes in: ", votingTimer)}, 1000);
+            answerTimer = setInterval(function() {CountDownTimer(answerCountDownDate, 'answercountdowntimer', "AMA closes in: ", answerTimer)}, 1000);
+            var currentTime = new Date().getTime();
+            if(votingCountDownDate - currentTime < 0) {
+                document.getElementById('vote').style.display = 'none';
+            }
+            if(answerCountDownDate - currentTime < 0) {
+                document.getElementById('reply').style.display = 'none';
+            }
+        });
+
+        //]]>
+    </script>
 </div>
 
-<script th:inline="javascript">
-    //<![CDATA[
-    var votingCountDownDate = [[${post.votingCloses.getTime()}]];
-    var answerCountDownDate = [[${post.answerCloses.getTime()}]];
-    var votingTimer;
-    var answerTimer;
 
-    function CountDownTimer(countDownDate, stringId, text, timer) {
-        var now = new Date().getTime();
-
-        var votingDistance = countDownDate - now;
-
-        var days = Math.floor(votingDistance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((votingDistance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((votingDistance % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((votingDistance % (1000 * 60)) / 1000);
-
-        document.getElementById(stringId).innerHTML = text + days + "d " + hours + "h "
-            + minutes + "m " + seconds + "s ";
-
-        if (votingDistance < 0) {
-            clearInterval(timer);
-            document.getElementById(stringId).innerHTML = text + " EXPIRED";
-        }
-    }
-    // Update the count down every 1 second
-    votingTimer = setInterval(function() {CountDownTimer(votingCountDownDate, 'votingcountdowntimer', "Voting closes in: ", votingTimer)}, 1000);
-    answerTimer = setInterval(function() {CountDownTimer(answerCountDownDate, 'answercountdowntimer', "AMA closes in: ", answerTimer)}, 1000);
-    var currentTime = new Date().getTime();
-    if(votingCountDownDate - currentTime < 0) {
-        document.getElementById('vote').style.display = 'none';
-    }
-    if(answerCountDownDate - currentTime < 0) {
-        document.getElementById('reply').style.display = 'none';
-    }
-    //]]>
-</script>
 </body>
 </html>
