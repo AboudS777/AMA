@@ -114,6 +114,7 @@ public class CommentPostTests {
     @Test
     public void testAddCommentToInvalidSubmission() throws Exception {
         String commentText = "test comment on invalid submission";
+
         int commentRepositorySize = commentPostRepository.findAll().size();
         mvc
                 .perform(post("/posts/invalid")
