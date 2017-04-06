@@ -6,16 +6,5 @@ Developing an "Ask me anything" web-based app.
 
 [Product Backlog](https://github.com/AboudS777/AMA/projects)
 
-# Current Sprint
+[Heroku App](http://ama4806.herokuapp.com/)
 
-Milestone 1
-
-User Authentication
-Sign up form
-Login Form
-Encryption
-
-# Next Sprint
-Create new AMA with description
-Ask a Question on AMA
-Display list of all AMA's
