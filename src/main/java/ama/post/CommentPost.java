@@ -39,6 +39,14 @@ public class CommentPost extends Post {
         return this.context;
     }
 
+    public SubmissionPost getSubmissionPost() {
+        if(this.context instanceof SubmissionPost) {
+            return (SubmissionPost) context;
+        } else {
+            return ((CommentPost)(this.context)).getSubmissionPost();
+        }
+    }
+
     public int getUpvotes() {
         return this.upvoters.size();
     }

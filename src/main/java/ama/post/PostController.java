@@ -106,7 +106,7 @@ public class PostController {
         CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId));
         User user = authenticator.getCurrentUser();
         if (comment != null) {
-            SubmissionPost post = (SubmissionPost) comment.getContext();
+            SubmissionPost post = comment.getSubmissionPost();
             Date now = new Date();
             if (user != null && now.before(post.getVotingCloses())) {
                 comment.upvote(user);
@@ -122,7 +122,7 @@ public class PostController {
         CommentPost comment = commentPostRepository.findById(Long.parseLong(commentId));
         User user = authenticator.getCurrentUser();
         if (comment != null) {
-            SubmissionPost post = (SubmissionPost)comment.getContext();
+            SubmissionPost post = comment.getSubmissionPost();
             Date now = new Date();
             if (user != null && now.before(post.getVotingCloses())) {
                 comment.downvote(user);
